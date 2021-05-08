@@ -5,18 +5,37 @@
         <slot name="menuLeft"></slot>
       </div>
       <div class="table-search" v-if="searchKey">
-        <el-input type="text" size="mini" v-model="keyword" :placeholder="searchPlaceholder" />
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleSearch">搜索</el-button>
+        <el-input type="text" size="mini" v-model="keyword" style="width: 280px" :placeholder="searchPlaceholder"></el-input>
+        <div>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleSearch">搜索</el-button>
+        </div>
         <el-button icon="el-icon-delete" size="mini" @click="handleClearSearch">清空</el-button>
       </div>
     </div>
-    <el-table :data="curTabData" type="selection" @selection-change="handleSelectionChange">
-      <el-table-column v-for="(item, index) in columns" :key="index" :prop="item.prop" :label="item.label"></el-table-column>
-      <el-table-column label="操作">
+    <el-table ref="table" :data="curTabData" size="mini" @selection-change="handleSelectionChange">
+      <!-- 多选列 -->
+      <el-table-column v-if="tableColAttributes.type" type="selection" width="55" align="center"></el-table-column>
+      <!-- 序号列 -->
+      <el-table-column
+        v-if="tableIndex.index"
+        type="index"
+        :label="this.tableIndex.indexLabel"
+        :align="tableColAttributes.align"
+      ></el-table-column>
+      <!-- 数据渲染列 -->
+      <el-table-column
+        v-for="(item, index) in columns"
+        :key="index"
+        :prop="item.prop"
+        :label="item.label"
+        :align="tableColAttributes.align"
+      ></el-table-column>
+      <!-- 菜单列 -->
+      <el-table-column label="操作" :align="tableColAttributes.align">
         <slot name="menu"></slot>
       </el-table-column>
     </el-table>
-    <div>
+    <div class="table-footer">
       <el-pagination
         @size-change="(size) => handlePaginationChange({ number: size, type: 'pageSize' })"
         @current-change="(size) => handlePaginationChange({ number: size, type: 'currentPage' })"
@@ -51,22 +70,31 @@ export default {
     },
   },
   computed: {
-    dataTotalNumber() {
-      if (this.searchData.length) {
-        return this.searchData.length;
-      }
-      return this.data.length;
-    },
     // 传入的option 暂时分为三个区域 1. columns 2. el-table所需要的属性和方法。 3. 自定义的属性。
     columns() {
       return this.option.column;
+    },
+    tableAttributes() {
+      return {};
+    },
+    tableColAttributes() {
+      return {
+        type: this.option.selection && 'selection',
+        align: this.option.align,
+      };
+    },
+    tableIndex() {
+      return {
+        index: this.option.index,
+        indexLabel: this.option.indexLabel || '#',
+      };
     },
   },
   data() {
     return {
       keyword: '',
       curTabData: [],
-      searchData: [],
+      dataTotalNumber: 0,
       pagination: {
         currentPage: 1,
         pageSize: 10,
@@ -74,6 +102,7 @@ export default {
         layout: 'total, sizes, prev, pager, next, jumper',
         background: true,
       },
+      indexLabelName: '#tableIndexTitle', // 设置的长点避免存在重复。
     };
   },
   watch: {
@@ -88,7 +117,7 @@ export default {
       handler: function () {
         if (this.page) {
           this.pagination = Object.assign({}, this.page);
-          this.curTabData = this.getTableDataByPage(this.data);
+          this.dataFilter();
         }
       },
       deep: true,
@@ -96,36 +125,44 @@ export default {
     },
   },
   created() {
+    console.log('hello el-table-show');
     if (!this.page) {
-      this.curTabData = this.getTableDataByPage(this.data);
+      this.dataFilter();
     }
   },
   methods: {
     handleSearch() {
       this.handlePaginationChange({ number: 1, type: 'currentPage' });
-      this.$nextTick(() => {
-        let searchData;
-        const { searchKey } = this;
-        if (Array.isArray(searchKey)) {
-          searchData = this.data.filter((item) => {
-            const multipleItem = [];
-            searchKey.forEach((key) => {
-              multipleItem.push(item[key].indexOf(this.keyword) > -1);
-            });
-            return multipleItem.some((i) => i);
+    },
+    dataFilter() {
+      let searchData;
+      const { searchKey } = this;
+      if (Array.isArray(searchKey)) {
+        searchData = this.data.filter((item) => {
+          const multipleItem = [];
+          searchKey.forEach((key) => {
+            multipleItem.push(item[key].indexOf(this.keyword) > -1);
           });
-        } else if (typeof searchKey === 'string') {
-          searchData = this.data.filter((item) => item[searchKey].indexOf(this.keyword) > -1);
-        }
-        this.searchData = searchData;
-        this.curTabData = this.getTableDataByPage(searchData);
-      });
+          return multipleItem.some((i) => i);
+        });
+      } else if (typeof searchKey === 'string') {
+        searchData = this.data.filter((item) => item[searchKey].indexOf(this.keyword) > -1);
+      } else {
+        searchData = this.data;
+      }
+      this.dataTotalNumber = searchData.length;
+      this.getCurTabData(searchData);
+    },
+    /**
+     * data为经过search筛选之后的数据。
+     */
+    getCurTabData(data) {
+      this.curTabData = this.getTableDataByPage(data);
     },
     handleClearSearch() {
       this.keyword = '';
     },
     handlePaginationChange(payload) {
-      console.log(payload);
       const pageInfo = {
         ...this.pagination,
         [payload.type]: payload.number,
@@ -134,15 +171,21 @@ export default {
         this.$emit('update:page', pageInfo);
       } else {
         this.pagination = pageInfo;
-        this.curTabData = this.getTableDataByPage(this.data);
+        this.dataFilter();
       }
     },
+    /**
+     * 根据分页数据进行数据最终的获取。
+     */
     getTableDataByPage(list) {
       const { currentPage, pageSize } = this.pagination;
       return list.slice((currentPage - 1) * pageSize, currentPage * pageSize);
     },
-    handleSelectionChange() {
-      // 1.
+    /**
+     * 分页检索都会触发该方法。所以没有方法恢复之前选择的数据。（因为当list为空数组时 分不清是分页还是取消选择）
+     */
+    handleSelectionChange(list) {
+      this.$emit('selectionChange', list);
     },
   },
 };
@@ -156,7 +199,12 @@ export default {
 .table-search {
   width: 460px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
+}
+.table-footer {
+  padding: 10px 0;
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

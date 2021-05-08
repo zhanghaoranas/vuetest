@@ -24,6 +24,9 @@ export default {
     return {
       tabData: [],
       option: {
+        index: true,
+        indexLabel: '',
+        selection: true,
         align: 'center',
         menuAlign: 'center',
         column: [

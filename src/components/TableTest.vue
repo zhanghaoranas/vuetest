@@ -1,20 +1,20 @@
 <template>
-  <!-- <avue-crud :data="tabData" :option="option" :page.sync="page"></avue-crud> -->
-  <el-table-show :data="tabData" :option="option"></el-table-show>
+  <avue-crud :data="tabData" :option="option"></avue-crud>
+  <!-- <el-table-show :data="tabData" :option="option"></el-table-show> -->
 </template>
 
 <script>
-import ElTableShow from './ElTableShow';
+import AvueCrud from './ElTableShow';
 export default {
   name: '',
   components: {
-    ElTableShow,
+    AvueCrud,
   },
   data() {
     return {
       tabData: [],
       option: {
-        align: 'center',
+        // align: 'center',
         menuAlign: 'center',
         column: [
           {
