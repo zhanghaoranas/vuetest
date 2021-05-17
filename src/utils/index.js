@@ -18,3 +18,31 @@ export const groupByPrototype = (arr, keyList) => {
     return groupArr;
   }
 };
+
+/**
+ * @description 根据数组对字符串进行拆分。
+ */
+// const wordList = ['阶梯','每满', '件',, '可再送']
+// const unitList = [ 'M元', 'M件', 'M折','N元', 'N折','N件']
+// list = ['阶梯','每满', 'M元', 'M件', 'M折', '件', '可再送', 'N元', 'N折','N件']
+export const strSplitByList = (str, list) => {
+  const hasKey = [];
+  const willSplitStr = list.reduce((pre, cur) => {
+    const str = pre.replace(cur, "$");
+    if (str !== pre) {
+      hasKey.push(cur);
+    }
+    return str;
+  }, str);
+  const keyWordInHead = willSplitStr.indexOf("$") === 0;
+  const valArr = willSplitStr.split("$");
+  const maxLength = Math.max(hasKey.length, valArr.length);
+  const endData = [];
+  for (let i = 0; i < maxLength - 1; i++) {
+    if (keyWordInHead) {
+      hasKey[i] && endData.push(hasKey[i]);
+      valArr[i] && endData.push(valArr[i]);
+    }
+  }
+  return endData;
+};

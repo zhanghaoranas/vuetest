@@ -29,10 +29,16 @@
         :prop="item.prop"
         :label="item.label"
         :align="tableColAttributes.align"
-      ></el-table-column>
+      >
+        <template slot-scope="{ row }">
+          <slot v-if="item.slot" :name="item.prop" :row="row"></slot>
+        </template>
+      </el-table-column>
       <!-- 菜单列 -->
       <el-table-column label="操作" :align="tableColAttributes.align">
-        <slot name="menu"></slot>
+        <template slot-scope="scope">
+          <slot name="menu" :row="scope.row" size="mini"></slot>
+        </template>
       </el-table-column>
     </el-table>
     <div class="table-footer">
@@ -98,7 +104,7 @@ export default {
       pagination: {
         currentPage: 1,
         pageSize: 10,
-        pageSizes: [10, 20, 30, 40, 50, 100],
+        pageSizes: [5, 10, 20, 30, 40, 50, 100],
         layout: 'total, sizes, prev, pager, next, jumper',
         background: true,
       },
@@ -123,13 +129,16 @@ export default {
       deep: true,
       immediate: true,
     },
+    data: {
+      handler: function () {
+        if (!this.page) {
+          this.dataFilter();
+        }
+      },
+      immediate: true,
+    },
   },
-  created() {
-    console.log('hello el-table-show');
-    if (!this.page) {
-      this.dataFilter();
-    }
-  },
+
   methods: {
     handleSearch() {
       this.handlePaginationChange({ number: 1, type: 'currentPage' });
@@ -141,7 +150,9 @@ export default {
         searchData = this.data.filter((item) => {
           const multipleItem = [];
           searchKey.forEach((key) => {
-            multipleItem.push(item[key].indexOf(this.keyword) > -1);
+            if (item[key]) {
+              multipleItem.push(item[key].indexOf(this.keyword) > -1);
+            }
           });
           return multipleItem.some((i) => i);
         });
@@ -158,6 +169,10 @@ export default {
      */
     getCurTabData(data) {
       this.curTabData = this.getTableDataByPage(data);
+      // 当非第一页数据删除完毕时，自动跳到上一页。
+      if (this.curTabData.length === 0 && this.pagination.currentPage > 1) {
+        this.handlePaginationChange({ number: this.pagination.currentPage - 1, type: 'currentPage' });
+      }
     },
     handleClearSearch() {
       this.keyword = '';
@@ -185,7 +200,7 @@ export default {
      * 分页检索都会触发该方法。所以没有方法恢复之前选择的数据。（因为当list为空数组时 分不清是分页还是取消选择）
      */
     handleSelectionChange(list) {
-      this.$emit('selectionChange', list);
+      this.$emit('selection-change', list);
     },
   },
 };
