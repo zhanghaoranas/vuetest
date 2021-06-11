@@ -138,7 +138,11 @@ export default {
   },
   created() {
     if (this.page) {
-      this.pagination = Object.assign({}, this.page);
+      this.pagination = {
+        ...this.pagination,
+        ...Object.assign({}, this.page),
+      };
+      console.log(this.pagination);
     }
     this.dataFilter();
   },
@@ -172,8 +176,8 @@ export default {
      */
     getCurTabData(data) {
       this.curTabData = this.getTableDataByPage(data);
-      // 当非第一页数据删除完毕时，自动跳到上一页。
-      if (this.curTabData.length === 0 && this.pagination.currentPage > 1) {
+      // 当非第一页数据删除完毕时，自动跳到上一页。 排除初始data未空数组的情况。
+      if (this.data.length !== 0 && this.curTabData.length === 0 && this.pagination.currentPage > 1) {
         this.handlePaginationChange({ number: this.pagination.currentPage - 1, type: 'currentPage' });
       }
     },
@@ -191,7 +195,7 @@ export default {
         this.$emit('current-change', payload.number);
       }
       if (this.page) {
-        this.$emit('update:page', this.pageInfo);
+        this.$emit('update:page', this.pagination);
       }
       this.dataFilter();
     },
