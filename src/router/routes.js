@@ -16,4 +16,8 @@ export default [
     path: "/eltabs",
     component: () => import("../views/elTabsSetName"),
   },
+  {
+    path: "/testavue",
+    component: () => import("../views/aVueTest"),
+  },
 ];
