@@ -14,14 +14,9 @@
     </div>
     <el-table ref="table" :data="curTabData" size="mini" @selection-change="handleSelectionChange">
       <!-- 多选列 -->
-      <el-table-column v-if="tableColAttributes.type" type="selection" width="55" align="center"></el-table-column>
+      <el-table-column v-if="tableColAttributes.type" type="selection" width="55" align="center" />
       <!-- 序号列 -->
-      <el-table-column
-        v-if="tableIndex.index"
-        type="index"
-        :label="this.tableIndex.indexLabel"
-        :align="tableColAttributes.align"
-      ></el-table-column>
+      <el-table-column v-if="tableIndex.index" type="index" :label="this.tableIndex.indexLabel" :align="tableColAttributes.align" />
       <!-- 数据渲染列 -->
       <el-table-column
         v-for="(item, index) in columns"
@@ -36,7 +31,7 @@
         </template>
       </el-table-column>
       <!-- 菜单列 -->
-      <el-table-column label="操作" :align="tableColAttributes.align">
+      <el-table-column v-if="menuColumn" label="操作" :align="tableColAttributes.align">
         <template slot-scope="scope">
           <slot name="menu" :row="scope.row" size="mini"></slot>
         </template>
@@ -54,6 +49,36 @@
 </template>
 
 <script>
+/**
+ * props:
+ * 列表数据
+ * data: [],
+ * 表格配置
+ * option: {
+ *  index: Boolean,自定义索引
+ *  indexLabel: Stirng 自定义索引的列标题
+ *  column：Object{
+ *    prop: String,
+ *    label: String,
+ *    renderHeader: renderFunction
+ *  }
+ * }
+ * 检索配置
+ * searchPlaceholder： Stirng
+ * searchKey: String | Array, 配置检索的字段
+ *
+ * 分页配置
+ *
+ * page:Object {
+ *  currentPage: 1,
+ *  pageSize: 10,
+ *  pageSizes: [5, 10, 20, 30, 40, 50, 100],
+ *  layout: 'total, sizes, prev, pager, next, jumper',
+ *  background: true,
+ *
+ * }
+ */
+
 export default {
   name: 'el-table-show',
   props: {
@@ -76,27 +101,7 @@ export default {
       type: [String, Array],
     },
   },
-  computed: {
-    // 传入的option 暂时分为三个区域 1. columns 2. el-table所需要的属性和方法。 3. 自定义的属性。
-    columns() {
-      return this.option.column;
-    },
-    tableAttributes() {
-      return {};
-    },
-    tableColAttributes() {
-      return {
-        type: this.option.selection && 'selection',
-        align: this.option.align,
-      };
-    },
-    tableIndex() {
-      return {
-        index: this.option.index,
-        indexLabel: this.option.indexLabel || '#',
-      };
-    },
-  },
+
   data() {
     return {
       keyword: '',
@@ -111,6 +116,36 @@ export default {
       },
       indexLabelName: '#tableIndexTitle', // 设置的长点避免存在重复。
     };
+  },
+  computed: {
+    // 传入的option 暂时分为三个区域 1. columns 2. el-table所需要的属性和方法。 3. 自定义的属性。
+    columns() {
+      return this.option.column;
+    },
+    tableAttributes() {
+      return {};
+    },
+    tableColAttributes() {
+      return {
+        type: this.option.selection && 'selection',
+        align: this.option.align,
+      };
+    },
+    /**
+     *
+     */
+    tableIndex() {
+      return {
+        index: this.option.index,
+        indexLabel: this.option.indexLabel || '#',
+      };
+    },
+    /**
+     * 是否存在操作列
+     */
+    menuColumn() {
+      return this.option.menu || true;
+    },
   },
   watch: {
     // vue 的watch 绑定时使用 for in 进行 循环变量的， 现在放在page前面这个watch 生效 放到page 后面则不生效。 但由于for in 是以任意顺序遍历一个对象的，随意还是不适用改监听 （v8中有规律涉及到常规属性和 排序属性），
