@@ -20,4 +20,8 @@ export default [
     path: "/testavue",
     component: () => import("../views/aVueTest"),
   },
+  {
+    path: "/tabs",
+    component: () => import("../views/tabs"),
+  },
 ];
