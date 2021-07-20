@@ -16,4 +16,8 @@ export default [
     path: "/eltabs",
     component: () => import("../views/elTabsSetName"),
   },
+  {
+    path: "/compositionapi",
+    component: () => import("../views/CompositionAPI"),
+  },
 ];
