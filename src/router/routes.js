@@ -17,6 +17,10 @@ export default [
     component: () => import("../views/elTabsSetName"),
   },
   {
+    path: "/compositionapi",
+    component: () => import("../views/CompositionAPI"),
+  },
+  {
     path: "/testavue",
     component: () => import("../views/aVueTest"),
   },

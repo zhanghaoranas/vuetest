@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@smallwei/avue": "^2.8.10",
+    "@vue/composition-api": "^1.0.3",
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "element-ui": "^2.15.1",
     "vue": "^2.6.11",
