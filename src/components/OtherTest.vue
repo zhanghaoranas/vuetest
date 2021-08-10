@@ -27,6 +27,9 @@ export default {
     //   this.newTestArr.push(222);
     // }, 5000);
   },
+  activated() {
+    console.log(33333333);
+  },
   methods: {},
 };
 </script>
