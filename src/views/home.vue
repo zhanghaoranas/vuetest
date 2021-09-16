@@ -5,6 +5,7 @@
     <OtherTest :testArr="formData.testArr" />
     <TableTest />
     <dialog-test :dialogVisible.sync="dialogVisible" />
+    <name-slot></name-slot>
   </div>
 </template>
 
@@ -13,6 +14,7 @@ import DialogTest from '../components/DialogTest.vue';
 import MultiLevel from '../components/MultiLevel.vue';
 import OtherTest from '../components/OtherTest';
 import TableTest from '../components/TableTest';
+import NameSlot from '../components/NameSlot.vue';
 import { groupByPrototype } from '../utils';
 export default {
   name: 'home',
@@ -21,6 +23,7 @@ export default {
     OtherTest,
     TableTest,
     DialogTest,
+    NameSlot,
   },
   data: function () {
     return {
@@ -45,6 +48,9 @@ export default {
       },
     ];
     console.log(groupByPrototype(testData, ['a', 'c']));
+  },
+  activated() {
+    console.log('初次进入也执行');
   },
 };
 </script>
