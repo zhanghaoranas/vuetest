@@ -49,8 +49,11 @@ export default {
     ];
     console.log(groupByPrototype(testData, ['a', 'c']));
   },
+  mounted() {
+    console.log(4444444);
+  },
   activated() {
-    console.log('初次进入也执行');
+    console.log('第一次进入就执行');
   },
 };
 </script>
