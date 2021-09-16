@@ -1,28 +1,48 @@
 <template>
   <div class="elTableShow">
     <el-table-show :data="tabData" :option="option" :page.sync="page" searchKey="name" @select-change="selectionChange">
-      <template v-slot:sex="{ row }">
-        <el-input v-model="row.sex"></el-input>
+      <template #sex="{ row }">
+        <el-input v-model="row.sex" size="mini"></el-input>
       </template>
       <template slot="menuLeft">
         <span>送赠品：</span>
         <el-button size="mini" type="primary">添加赠品</el-button>
         <el-button size="mini">删除</el-button>
       </template>
-      <!-- 自定义菜单按钮 -->
-      <template v-slot:menu="{ type, size, row }">
+      <template #menu="{ type, size, row }">
         <el-button :size="size" :type="type" @click="handleDel(row)">删除</el-button>
       </template>
     </el-table-show>
+    <TableShow :data="computedTabData" :option="option" :page.sync="page">
+      <template #tableTop>
+        <div>
+          <div>
+            <span>送赠品：</span>
+            <el-button size="mini" type="primary">添加赠品</el-button>
+            <el-button size="mini">删除</el-button>
+          </div>
+          <div>
+            <el-input placeholder="检索" v-model="searchKey"></el-input>
+            <el-button></el-button>
+          </div>
+        </div>
+      </template>
+      <template #sex="{ row }">
+        <el-input v-model="row.sex" size="mini"></el-input>
+      </template>
+      <template #menu="{ type, size, row }">
+        <el-button :size="size" :type="type" @click="handleDel(row)">删除</el-button>
+      </template>
+    </TableShow>
   </div>
 </template>
 
 <script>
 import ElTableShow from '../components/ElTableShow';
-
+import TableShow from '../components/TableShow.vue';
 export default {
   name: 'tableShow',
-  components: { ElTableShow },
+  components: { ElTableShow, TableShow },
   data() {
     return {
       tabData: [],
@@ -32,6 +52,7 @@ export default {
         selection: true,
         align: 'center',
         menuAlign: 'center',
+        border: true,
         column: [
           {
             label: '姓名',
@@ -51,8 +72,10 @@ export default {
         layout: 'total, sizes, prev, pager, next, jumper',
         background: true,
       },
+      searchKey: '',
     };
   },
+
   created() {
     setTimeout(() => {
       let i = 40;
@@ -65,6 +88,15 @@ export default {
         i--;
       }
     }, 2000);
+  },
+  computed: {
+    computedTabData() {
+      if (this.searchKey) {
+        return this.tabData.filter((item) => item.name.indexOf(this.searchKey) > -1);
+      } else {
+        return this.tabData;
+      }
+    },
   },
   methods: {
     selectionChange(list) {
