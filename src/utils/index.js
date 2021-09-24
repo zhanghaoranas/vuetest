@@ -12,10 +12,7 @@ export const concatArr = (o, n, prototype) => {
   if (prototype) {
     const arr = [];
     n.forEach((i) => {
-      if (
-        i[prototype] &&
-        !o.find((j) => j[prototype] && j[prototype] === i[prototype])
-      ) {
+      if (i[prototype] && !o.find((j) => j[prototype] && j[prototype] === i[prototype])) {
         arr.push(i);
       }
     });
@@ -39,10 +36,7 @@ export const removeArr = (data, willRemove, prototype) => {
   const newData = [];
   if (prototype) {
     data.forEach((i) => {
-      if (
-        i[prototype] &&
-        !willRemove.some((j) => j[prototype] && j[prototype] === i[prototype])
-      ) {
+      if (i[prototype] && !willRemove.some((j) => j[prototype] && j[prototype] === i[prototype])) {
         newData.push(i);
       }
     });
@@ -105,9 +99,7 @@ export const groupByPrototype = (arr, keyList) => {
   const key = keyList.shift();
   const groupValue = [...new Set(arr.map((item) => item[key]))];
   if (groupValue.length === 0) throw Error("keyList 中不包含数组对象的属性");
-  const groupArr = groupValue.map((value) =>
-    arr.filter((item) => item[key] === value)
-  );
+  const groupArr = groupValue.map((value) => arr.filter((item) => item[key] === value));
   if (keyList.length > 0) {
     return groupArr.map((item) => groupByPrototype(item, keyList));
   } else {
@@ -126,4 +118,35 @@ export const strSplitByList = (str, list) => {
     return pre.replace(reg, `$${cur}$`);
   }, str);
   return willSplitStr.split("$").filter((item) => item);
+};
+
+export const arrToObj = (arr, key = "id") =>
+  arr.reduce((pre, cur) => {
+    pre[cur[key]] = cur;
+    return pre;
+  }, {});
+/**
+ *
+ * @param {Array} o 初始数组
+ * @param {Array} n 更改后的数据
+ * @param {String} flag 数据状态（status 由于比较常见，所以使用的名称为flag）
+ * @param {Array} checks 要检测的数组
+ * @param {String} key 数组的唯一表示
+ * @returns {Array} 修改的数据
+ *
+ * 新增和筛选的操作是否可以放到外部， 可以少传递一个参数.
+ */
+
+export const getChangedArr = (o, n, flag, checks, key = "id") => {
+  const oldObj = arrToObj(o);
+  // 选择出不是新增和删除的数据
+  const nArr = n.filter((item) => !item[flag]);
+  const nKey = nArr.map((item) => item[key]);
+  const newObj = arrToObj(nArr);
+  return nKey.reduce((pre, cur) => {
+    if (checks.some((check) => oldObj[cur][check] !== newObj[cur][check])) {
+      pre.push(newObj[cur]);
+    }
+    return pre;
+  }, []);
 };

@@ -13,9 +13,51 @@
 import DialogTest from '../components/DialogTest.vue';
 import MultiLevel from '../components/MultiLevel.vue';
 import OtherTest from '../components/OtherTest';
-import TableTest from '../components/TableTest';
+import TableTest from '../components/TableTest.vue';
 import NameSlot from '../components/NameSlot.vue';
-import { groupByPrototype } from '../utils';
+import { groupByPrototype, getChangedArr } from '../utils';
+
+const oldArr = [
+  {
+    id: 1,
+    name: 1,
+  },
+  {
+    id: 2,
+    name: 2,
+  },
+  {
+    id: 3,
+    name: 3,
+  },
+  {
+    id: 4,
+    name: 4,
+  },
+];
+const newArr = [
+  {
+    id: 1,
+    name: 1,
+    flag: 'add',
+  },
+  {
+    id: 2,
+    name: 2,
+    flag: 'del',
+  },
+  {
+    id: 3,
+    name: 444,
+  },
+  {
+    id: 4,
+    name: 4,
+  },
+];
+
+console.log(getChangedArr(oldArr, newArr, 'flag', ['name'], 'id'));
+
 export default {
   name: 'home',
   components: {
