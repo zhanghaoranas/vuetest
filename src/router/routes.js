@@ -2,6 +2,10 @@ import Home from "../views/home";
 export default [
   {
     path: "/",
+    component: () => import("../views/TestRadio.vue"),
+  },
+  {
+    path: "/home",
     component: Home,
   },
   {

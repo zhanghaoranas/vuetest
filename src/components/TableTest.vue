@@ -1,7 +1,7 @@
 <template>
   <avue-crud :data="tabData" :option="option" :row-style="setRowStyle">
     <template #flag="{ row }">
-      <el-input v-model="row.flag"></el-input>
+      <el-input v-model="row.name" @change="handleRowChange(row, 'name')"></el-input>
     </template>
   </avue-crud>
   <!-- <el-table-show :data="tabData" :option="option"></el-table-show> -->
@@ -9,10 +9,14 @@
 
 <script>
 // import AvueCrud from './ElTableShow';
+import flag from '@/directive/flag.js';
 export default {
   name: '',
   components: {
     // AvueCrud,
+  },
+  directives: {
+    flag,
   },
   data() {
     return {
@@ -49,15 +53,18 @@ export default {
       });
       i--;
     }
-    console.log(this.tabData, 111111111111);
+    this.originalData = JSON.parse(JSON.stringify(this.tabData));
     setTimeout(() => {
       this.tabData[2].flag = 'del';
     }, 3000);
   },
-
+  watch: {
+    tabData: {
+      handler: function () {},
+    },
+  },
   methods: {
     setRowStyle({ row }) {
-      console.log(row, 999999999999999);
       if (row.flag === 'add') {
         return {
           backgroundColor: 'blue',
@@ -71,6 +78,9 @@ export default {
           backgroundColor: 'red',
         };
       }
+    },
+    handleRowChange(row, key) {
+      row.flag = row[key] !== this.originalData[row.$index][key] ? 'edit' : '';
     },
   },
 };
