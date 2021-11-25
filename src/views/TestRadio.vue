@@ -5,7 +5,7 @@
     <el-radio v-model="radio" label="3"></el-radio>
     <el-radio v-model="radio" label="4"></el-radio>
     <el-radio v-model="radio" label="5"></el-radio> -->
-    <el-table :data="tableData" style="width: 100%" @row-click="handleRowClick">
+    <!-- <el-table :data="tableData" style="width: 100%" @row-click="handleRowClick">
       <el-table-column label="选则" width="180">
         <template slot-scope="scope">
           <el-radio v-model="radio" :label="scope.row.date"></el-radio>
@@ -34,7 +34,7 @@
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
-    </el-table>
+    </el-table> -->
   </div>
 </template>
 <script>
@@ -67,7 +67,16 @@ export default {
       ],
     };
   },
-  created() {},
+  created() {
+    let a = [...this.tableData];
+    setTimeout(() => {
+      for (let i = 0; i < 10; i++) {
+        a = a.concat(a);
+      }
+      console.log(a.length);
+      this.tableData = a;
+    }, 3000);
+  },
   methods: {
     handleEdit(index, row) {
       console.log(index, row);

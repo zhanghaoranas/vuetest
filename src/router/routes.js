@@ -1,35 +1,35 @@
-import Home from "../views/home";
+import Home from '../views/home';
 export default [
   {
-    path: "/",
-    component: () => import("../views/TestRadio.vue"),
+    path: '/testRadio',
+    component: () => import('../views/TestRadio.vue'),
   },
   {
-    path: "/home",
+    path: '/home',
     component: Home,
   },
   {
-    path: "/eltableshow",
-    component: () => import("../views/tableShow"),
+    path: '/',
+    component: () => import('../views/tableShow'),
   },
   {
-    path: "/form",
-    component: () => import("../views/portsHasRule"),
+    path: '/form',
+    component: () => import('../views/portsHasRule'),
   },
   {
-    path: "/eltabs",
-    component: () => import("../views/elTabsSetName"),
+    path: '/eltabs',
+    component: () => import('../views/elTabsSetName'),
   },
   {
-    path: "/compositionapi",
-    component: () => import("../views/CompositionAPI"),
+    path: '/compositionapi',
+    component: () => import('../views/CompositionAPI'),
   },
   {
-    path: "/testavue",
-    component: () => import("../views/aVueTest"),
+    path: '/testavue',
+    component: () => import('../views/aVueTest'),
   },
   {
-    path: "/tabs",
-    component: () => import("../views/tabs"),
+    path: '/tabs',
+    component: () => import('../views/tabs'),
   },
 ];

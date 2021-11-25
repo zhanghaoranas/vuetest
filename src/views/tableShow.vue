@@ -13,7 +13,7 @@
         <el-button :size="size" :type="type" @click="handleDel(row)">删除</el-button>
       </template>
     </el-table-show>
-    <TableShow :data="computedTabData" :option="option" :page.sync="page">
+    <TableShow v-if="false" :data="computedTabData" :option="option" :page.sync="page">
       <template #tableTop>
         <div>
           <div>
@@ -78,12 +78,41 @@ export default {
 
   created() {
     setTimeout(() => {
-      let i = 40;
+      let i = 10000;
       while (i > 0) {
         this.tabData.push({
           name: `姓名${i}--${i}`,
           sex: i % 2,
           id: i,
+          adjustPriceOrderId: '1452608171230113794',
+          adjustPriceOrderItemNo: 'I2021102500032',
+          approvalGoods: 0,
+          areaCode: null,
+          areaId: null,
+          areaName: null,
+          auditOpinion: null,
+          auditStatus: 0,
+          auditTime: null,
+          auditUser: null,
+          auditUserName: null,
+          createDeptId: '1410070493943316482',
+          createTime: '2021-10-25 20:09:11',
+          createUser: '1381884270120800257',
+          currencyName: '二甲双胍格列本脲片(Ⅰ)',
+          factoryName: '成都恒瑞制药有限公司',
+          goodsCode: '351536',
+          goodsName: '二甲双胍格列本脲片(Ⅰ)',
+          goodsUnit: '盒',
+          highlightShow: null,
+          isNewGoods: 0,
+          // itemPrices: [{ id: '1452608172060585993', adjustPriceOrderItemId: '1452608171922173961' }],
+          maxLimitPrice: '0.00',
+          minLimitPrice: '0.00',
+          remark: null,
+          specs: '30片',
+          tenantId: '845446',
+          updateTime: null,
+          updateUser: null,
         });
         i--;
       }
