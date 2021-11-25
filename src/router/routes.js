@@ -2,6 +2,7 @@ import Home from '../views/home';
 export default [
   {
     path: '/testRadio',
+    path: '/',
     component: () => import('../views/TestRadio.vue'),
   },
   {
@@ -10,6 +11,7 @@ export default [
   },
   {
     path: '/',
+    path: '/eltableshow',
     component: () => import('../views/tableShow'),
   },
   {
@@ -31,5 +33,10 @@ export default [
   {
     path: '/tabs',
     component: () => import('../views/tabs'),
+  },
+  {
+    path: '/form-arr',
+    name: 'formArr',
+    component: () => import('../views/FormArr.vue'),
   },
 ];
