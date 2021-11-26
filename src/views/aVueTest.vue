@@ -1,13 +1,39 @@
 <template>
   <div>
-    {{ page }}
-    <avue-crud :data="data" :option="option" :page.sync="page" @on-load="onLoad"></avue-crud>
+    <avue-crud :data="data" :search.sync="form" :option="option" :page.sync="page" @on-load="onLoad" v-enter>
+      <!-- <template #surnameSearch>
+        <el-tooltip :disabled="form.surname.length < 2" class="item" effect="dark" :content="selected" placement="top-start">
+          <el-select v-model="form.surname" multiple collapse-tags date-cant-enter="true">
+            <el-option v-for="(item, index) in dicData" :label="item.label" :value="item.value" :key="index"></el-option>
+          </el-select>
+        </el-tooltip>
+      </template> -->
+      <template #surnameSearch>
+        <KeySelect label="hehe" :list="dicData" />
+      </template>
+      <!-- <template #areaNameSearch>
+        <AreaSearchByHove v-model="form.areaName" />
+      </template>
+      <template #areaIDSearch>
+        <AreaSearchByHove v-model="form.areaID" />
+      </template> -->
+    </avue-crud>
   </div>
 </template>
 
 
 <script>
+import enter from '../directive/enter.js';
+// import AreaSearchByHove from '../components/search/AreaSearchByHove.vue';
+import KeySelect from '../components/KeySelect.vue';
 export default {
+  components: {
+    // AreaSearchByHove,
+    KeySelect,
+  },
+  directives: {
+    enter,
+  },
   data() {
     return {
       page: {
@@ -15,25 +41,78 @@ export default {
         pagerCount: 5,
       },
       data: [],
+      form: {
+        surname: '',
+      },
       option: {
         align: 'center',
         menuAlign: 'center',
+        searchLabelWidth: 100,
+        // enter: true,
         column: [
           {
             label: '姓名',
             prop: 'name',
+            search: true,
           },
           {
-            label: '性别',
-            prop: 'sex',
+            label: '姓氏',
+            prop: 'surname',
+            type: 'select',
+            search: true,
+            searchslot: true,
+          },
+          {
+            label: '所属区域',
+            prop: 'areaName',
+            search: true,
+            type: 'select',
+            dicData: [
+              {
+                label: '1',
+                value: '1',
+              },
+              {
+                label: '2',
+                value: 2,
+              },
+            ],
+            // searchslot: true,
+          },
+          {
+            label: '所属区域ID',
+            prop: 'areaID',
+            search: true,
+            searchslot: true,
           },
         ],
       },
+      dicData: [],
     };
   },
+  computed: {
+    selected() {
+      if (this.form.surname) {
+        return this.form.surname
+          .map((value) => {
+            return this.dicData.find((item) => item.value === value).label;
+          })
+          .join();
+      } else {
+        return '';
+      }
+    },
+  },
+  created() {
+    for (let i = 0; i < 20; i++) {
+      this.dicData.push({
+        label: `姓名${i}`,
+        value: i,
+      });
+    }
+  },
   methods: {
-    onLoad(page) {
-      this.$message.success('分页信息:' + JSON.stringify(page));
+    onLoad() {
       this.page.total = 40;
       //模拟分页
       if (this.page.currentPage === 1) {

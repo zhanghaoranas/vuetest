@@ -2,7 +2,6 @@ import Home from '../views/home';
 export default [
   {
     path: '/testRadio',
-    path: '/',
     component: () => import('../views/TestRadio.vue'),
   },
   {
@@ -10,7 +9,6 @@ export default [
     component: Home,
   },
   {
-    path: '/',
     path: '/eltableshow',
     component: () => import('../views/tableShow'),
   },

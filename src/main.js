@@ -4,7 +4,7 @@ import ElementUI from 'element-ui';
 import Avue from '@smallwei/avue';
 import router from './router';
 import 'element-ui/lib/theme-chalk/index.css';
-import '@smallwei/avue/lib/index.css';
+// import '@smallwei/avue/lib/index.css';
 import VueCompositionAPI from '@vue/composition-api';
 import VueSocketIO from 'vue-socket.io';
 import store from './store';
@@ -27,7 +27,6 @@ Vue.use(
   })
 );
 
-console.log(1111111);
 new Vue({
   router,
   render: (h) => h(App),
