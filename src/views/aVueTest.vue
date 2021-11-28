@@ -9,7 +9,7 @@
         </el-tooltip>
       </template> -->
       <template #surnameSearch>
-        <KeySelect label="hehe" :list="dicData" />
+        <KeySelect :list="dicData" />
       </template>
       <!-- <template #areaNameSearch>
         <AreaSearchByHove v-model="form.areaName" />
@@ -18,6 +18,7 @@
         <AreaSearchByHove v-model="form.areaID" />
       </template> -->
     </avue-crud>
+    <KeySelect :list="dicData" />
   </div>
 </template>
 
@@ -68,6 +69,30 @@ export default {
             search: true,
             type: 'select',
             dicData: [
+              {
+                label: '1',
+                value: '1',
+              },
+              {
+                label: '2',
+                value: 2,
+              },
+              {
+                label: '1',
+                value: '1',
+              },
+              {
+                label: '2',
+                value: 2,
+              },
+              {
+                label: '1',
+                value: '1',
+              },
+              {
+                label: '2',
+                value: 2,
+              },
               {
                 label: '1',
                 value: '1',
