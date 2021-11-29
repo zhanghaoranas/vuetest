@@ -29,6 +29,9 @@
         @search-reset="searchReset"
         @current-change="currentChange"
         @size-change="sizeChange"
+        @row-click="rowClick"
+        :tableLoading="tableLoading"
+        v-enter
       ></avue-crud>
     </div>
     <span slot="footer" class="dialog-footer">
@@ -38,8 +41,12 @@
   </el-dialog>
 </template>
 <script>
+import enter from '@/directive/enter.js';
 export default {
   name: 'BaseHove',
+  directives: {
+    enter,
+  },
   props: {
     visible: {
       type: Boolean,
@@ -80,6 +87,7 @@ export default {
     return {
       isFullScreen: false,
       tableData: [],
+      tableLoading: false,
       tableOption: {
         isDialog: true,
         dialogSearchSpan: 18,
@@ -110,7 +118,9 @@ export default {
     if (this.excludeColumn.length > 0) {
       this.tableOption.column = this.tableOption.column.filter((item) => this.excludeColumn.includes(item.prop));
     }
+    // 对键盘事件进行监听
   },
+
   methods: {
     /**
      *点击取消按钮
@@ -137,6 +147,12 @@ export default {
     openModal() {
       this.$refs.crud.doLayout();
       this.$refs.crud.searchReset();
+      // table 部分的事件监听。
+      const tableCard = this.$refs.crud.$el.querySelector('.el-table');
+      tableCard.addEventListener('keydown', this.keydownChange);
+      this.$once('hook:beforeDestroy', () => {
+        tableCard.removeEventListener('keydown', this.keydownChange);
+      });
     },
     handleFullScreen() {
       this.isFullScreen = !this.isFullScreen;
@@ -149,6 +165,9 @@ export default {
       } finally {
         done && done();
       }
+    },
+    rowClick(row) {
+      this.$refs.crud.toggleSelection([row]);
     },
     searchReset() {
       this.searchChange({});
@@ -166,20 +185,35 @@ export default {
       this.selectionList = list;
     },
     async getList() {
-      const res = await this.request(this.page, {
-        ...this.search,
-        ...this.expandParams, // 拓展参数
-      });
-      console.log(res);
-      const data = res.data.data;
-      if (data) {
-        this.tableData = data.records;
-        //  判断 是否显示， 处理逻辑不同。
-        this.page.total = data.total;
+      try {
+        this.tableLoading = true;
+        const res = await this.request(this.page, {
+          ...this.search,
+          ...this.expandParams, // 拓展参数
+        });
+        const data = res.data.data;
+        if (data) {
+          this.tableData = data.records;
+          //  判断 是否显示， 处理逻辑不同。
+          this.page.total = data.total;
+        }
+      } finally {
+        this.tableLoading = false;
       }
     },
-    handleClose(done) {
-      done;
+    handleClose() {
+      this.closeModal();
+    },
+
+    keydownChange(event) {
+      const { code } = event;
+      if (code === 'ArrowRight') {
+        this.currentChange(this.page.currentPage + 1);
+      } else if (code === 'ArrowLeft' && this.page.currentPage > 1) {
+        this.currentChange(this.page.currentPage - 1);
+      } else if (code === 'Enter') {
+        this.handleSure();
+      }
     },
   },
 };

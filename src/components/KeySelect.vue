@@ -10,8 +10,8 @@
     <div ref="selectMain" class="select-main">
       <div tabindex="-1">
         <!-- el-tooltip组件 会有聚焦行为 -->
-        <el-tooltip :disabled="!value" effect="dark" :tabindex="-1" :content="value" placement="top-start">
-          <div class="select-main__value" tabindex="-1">{{ value || '所有' }}</div>
+        <el-tooltip :disabled="!showValue" effect="dark" :tabindex="-1" :content="showValue" placement="top-start">
+          <div class="select-main__value" tabindex="-1">{{ showValue || '所有' }}</div>
         </el-tooltip>
       </div>
 
@@ -55,6 +55,12 @@ export default {
         return [];
       },
     },
+    value: {
+      type: Array,
+      default: function () {
+        return [];
+      },
+    },
   },
   data() {
     return {
@@ -67,11 +73,10 @@ export default {
     };
   },
   computed: {
-    value() {
-      return this.filterList
-        .filter((item) => item.$checked)
-        .map((item) => item.label)
-        .join(' | ');
+    showValue() {
+      const value = this.filterList.filter((item) => item.$checked).map((item) => item.label);
+      this.$emit('input', value);
+      return value.join(' | ');
     },
   },
   created() {
@@ -97,9 +102,9 @@ export default {
       window.removeEventListener('resize', callback);
     });
 
-    document.addEventListener('keydown', function (event) {
-      console.dir(event.target);
-    });
+    // document.addEventListener('keydown', function (event) {
+    //   console.dir(event.target);
+    // });
   },
 
   beforeDestroy() {

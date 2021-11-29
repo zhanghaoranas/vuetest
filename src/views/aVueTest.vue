@@ -1,6 +1,6 @@
 <template>
   <div>
-    <avue-crud :data="data" :search.sync="form" :option="option" :page.sync="page" @on-load="onLoad" v-enter>
+    <avue-crud :data="data" :search.sync="form" :option="option" :page.sync="page" @on-load="onLoad" v-enter @search-change="searchChange">
       <!-- <template #surnameSearch>
         <el-tooltip :disabled="form.surname.length < 2" class="item" effect="dark" :content="selected" placement="top-start">
           <el-select v-model="form.surname" multiple collapse-tags date-cant-enter="true">
@@ -13,23 +13,22 @@
       </template>
       <!-- <template #areaNameSearch>
         <AreaSearchByHove v-model="form.areaName" />
-      </template>
+      </template> -->
       <template #areaIDSearch>
         <AreaSearchByHove v-model="form.areaID" />
-      </template> -->
+      </template>
     </avue-crud>
-    <KeySelect :list="dicData" />
   </div>
 </template>
 
 
 <script>
 import enter from '../directive/enter.js';
-// import AreaSearchByHove from '../components/search/AreaSearchByHove.vue';
+import AreaSearchByHove from '../components/search/AreaSearchByHove.vue';
 import KeySelect from '../components/KeySelect.vue';
 export default {
   components: {
-    // AreaSearchByHove,
+    AreaSearchByHove,
     KeySelect,
   },
   directives: {
@@ -167,6 +166,11 @@ export default {
           },
         ];
       }
+    },
+    searchChange(form, done) {
+      setTimeout(() => {
+        done();
+      }, 1000);
     },
   },
 };

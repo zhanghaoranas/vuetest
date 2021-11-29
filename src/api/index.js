@@ -1,9 +1,10 @@
-export const getAreaList = () => {
+export const getAreaList = ({ currentPage }) => {
   const areaList = [];
   for (let i = 0; i < 300; i++) {
     areaList.push({
-      areaName: `区域${i}`,
+      areaName: `${currentPage} - 区域${i}`,
       areaId: i,
+      id: i,
     });
   }
   return Promise.resolve({

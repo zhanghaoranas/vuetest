@@ -16,10 +16,12 @@ export default {
     if (!className.includes('avue-crud')) {
       throw new Error('该指令只适用于avue-crud组件');
     }
-
-    el.addEventListener('keyup', handlerEnter);
+    const form = el.querySelector('.avue-form');
+    console.log(form);
+    form.addEventListener('keyup', handlerEnter);
   },
   unbind(el) {
-    el.removeEventListener('keyup', handlerEnter);
+    const form = el.querySelector('.avue-form');
+    form.removeEventListener('keyup', handlerEnter);
   },
 };
