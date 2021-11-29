@@ -7,12 +7,16 @@ export const getAreaList = ({ currentPage }) => {
       id: i,
     });
   }
-  return Promise.resolve({
-    data: {
-      data: {
-        total: areaList.length,
-        records: areaList,
-      },
-    },
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        data: {
+          data: {
+            total: areaList.length,
+            records: areaList,
+          },
+        },
+      });
+    }, 1000);
   });
 };

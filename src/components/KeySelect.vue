@@ -3,15 +3,15 @@
     class="select-warp"
     ref="keySelect"
     @keydown.stop="handlerKeyDown"
-    tabindex="0"
+    tabindex="-1"
     @click.stop="dialogToggle"
     v-clickoutside="handleClose"
   >
     <div ref="selectMain" class="select-main">
-      <div tabindex="-1">
+      <div>
         <!-- el-tooltip组件 会有聚焦行为 -->
         <el-tooltip :disabled="!showValue" effect="dark" :tabindex="-1" :content="showValue" placement="top-start">
-          <div class="select-main__value" tabindex="-1">{{ showValue || '所有' }}</div>
+          <div class="select-main__value">{{ showValue || '所有' }}</div>
         </el-tooltip>
       </div>
 
@@ -103,7 +103,8 @@ export default {
     });
 
     // document.addEventListener('keydown', function (event) {
-    //   console.dir(event.target);
+    //   console.log(document.activeElement, 1111111);
+    //   console.dir(event);
     // });
   },
 

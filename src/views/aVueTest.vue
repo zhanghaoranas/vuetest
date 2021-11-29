@@ -1,23 +1,23 @@
 <template>
   <div>
-    <avue-crud :data="data" :search.sync="form" :option="option" :page.sync="page" @on-load="onLoad" v-enter @search-change="searchChange">
-      <!-- <template #surnameSearch>
-        <el-tooltip :disabled="form.surname.length < 2" class="item" effect="dark" :content="selected" placement="top-start">
-          <el-select v-model="form.surname" multiple collapse-tags date-cant-enter="true">
-            <el-option v-for="(item, index) in dicData" :label="item.label" :value="item.value" :key="index"></el-option>
-          </el-select>
-        </el-tooltip>
-      </template> -->
+    <avue-crud
+      class="avue-crud"
+      :data="data"
+      :search.sync="form"
+      :option="option"
+      :page.sync="page"
+      @on-load="onLoad"
+      v-enter
+      @search-change="searchChange"
+    >
       <template #surnameSearch>
         <KeySelect :list="dicData" />
       </template>
-      <!-- <template #areaNameSearch>
-        <AreaSearchByHove v-model="form.areaName" />
-      </template> -->
       <template #areaIDSearch>
-        <AreaSearchByHove v-model="form.areaID" />
+        <AreaSearchByHove ref="searchHove" v-model="form.areaID" @response="setAreaId" />
       </template>
     </avue-crud>
+    {{ form }}
   </div>
 </template>
 
@@ -172,8 +172,21 @@ export default {
         done();
       }, 1000);
     },
+    setAreaId(data) {
+      this.form.areaID = data.map((item) => item.areaId).join();
+      this.$refs.searchHove.handleFocus();
+    },
   },
 };
 </script>
+<style lang="scss">
+.serach-tran {
+  display: flex;
+  flex-wrap: wrap;
+}
+// .avue-form__row:focus-within {
+//   border: 1px solid red;
+// }
+</style>
 
   
