@@ -28,7 +28,7 @@
         @keydown.enter="listKeyDownEnter"
         @keydown.esc="listKeyDownEnter"
       >
-        <div class="select-dialog__search">
+        <div class="select-dialog__search" v-if="canSearch">
           <el-input
             ref="searchInput"
             size="mini"
@@ -74,6 +74,11 @@ export default {
       default: function () {
         return [];
       },
+    },
+
+    canSearch: {
+      default: false,
+      type: Boolean,
     },
   },
   data() {
@@ -142,7 +147,11 @@ export default {
       if (n) {
         // 当选项出现时检索框自动聚焦。
         setTimeout(() => {
-          this.$refs.searchInput.focus();
+          if (this.canSearch) {
+            this.$refs.searchInput.focus();
+          } else {
+            this.lostFocus();
+          }
         }, 200);
       }
     },
@@ -264,6 +273,7 @@ export default {
   margin: 8px 0 4px;
   height: 200px;
   overflow: auto;
+  min-width: 300px;
   > li {
     display: flex;
     align-items: center;

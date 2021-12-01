@@ -34,6 +34,7 @@ export default {
   directives: {
     enter,
   },
+
   data() {
     return {
       page: {
