@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-input ref="input" placeholder="请填入或选择" :value="name" @input="handleInput">
+    <el-input ref="input" class="search-input" placeholder="请填入或选择" :value="name" @input="handleInput">
       <i slot="suffix" v-if="name" class="el-input__icon el-icon-circle-close" @click="handleClear"></i>
       <el-button slot="append" icon="el-icon-search" @click="handleShowDialog"></el-button>
     </el-input>
@@ -61,4 +61,8 @@ export default {
   },
 };
 </script>
-<style scoped lang='scss'></style>
+<style scoped lang='scss'>
+.search-input >>> .el-input-group__append {
+  color: #409eff;
+}
+</style>

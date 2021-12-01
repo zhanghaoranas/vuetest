@@ -15,8 +15,8 @@
         </el-tooltip>
       </div>
 
-      <i v-show="!value" class="el-icon-arrow-down"></i>
-      <i v-show="value" class="el-icon-circle-close" @click.self="clearValue"></i>
+      <i v-show="!showValue" class="el-icon-arrow-down"></i>
+      <i v-show="showValue" class="el-icon-circle-close" @click.stop.self="clearValue"></i>
     </div>
     <transition name="el-zoom-in-top">
       <div
@@ -29,9 +29,23 @@
         @keydown.esc="listKeyDownEnter"
       >
         <div class="select-dialog__search">
-          <el-input ref="searchInput" size="mini" class="select-dialog__input" autofocus type="text" v-model="filterValue"></el-input>
+          <el-input
+            ref="searchInput"
+            size="mini"
+            class="select-dialog__input"
+            autofocus
+            type="text"
+            @keydown.native.down.stop.prevent="lostFocus"
+            v-model="filterValue"
+          ></el-input>
         </div>
-        <ul class="select-dialog__list" tabindex="-1">
+        <ul
+          class="select-dialog__list"
+          tabindex="-1"
+          ref="dialogList"
+          @keydown.down.stop.prevent="getNextFocus"
+          @keydown.up.stop.prevent="getPreFocus"
+        >
           <li v-for="(item, index) in filterList" :key="index" @click.prevent="selectValue(item)">
             <el-checkbox size="small" v-model="item.$checked"></el-checkbox>
             <span class="select-dialog__list-label">{{ item.label }}</span>
@@ -70,6 +84,10 @@ export default {
       filterValue: '',
       observer: null,
       dialogPosition: null,
+      dialogList: {
+        list: null,
+        index: -1,
+      },
     };
   },
   computed: {
@@ -128,6 +146,10 @@ export default {
         }, 200);
       }
     },
+    'dialogList.index': function (n) {
+      const { list } = this.dialogList;
+      list[n].focus();
+    },
   },
   methods: {
     /**
@@ -162,6 +184,28 @@ export default {
     listKeyDownEnter() {
       this.handleClose();
       this.$refs.keySelect.focus();
+    },
+    // input 触发 keydown.down 时 列表中的input 拒绝。
+    lostFocus() {
+      const dialogList = this.$refs.dialogList.querySelectorAll('input');
+      this.dialogList = {
+        list: Array.from(dialogList),
+        index: 0,
+      };
+    },
+
+    getNextFocus() {
+      this.dialogList.index = this.dialogList.index + 1;
+      if (this.dialogList.index === this.dialogList.list.length) {
+        this.dialogList.index = 0;
+      }
+    },
+    getPreFocus() {
+      if (this.dialogList.index === 0) {
+        this.dialogList.index = this.dialogList.list.length - 1;
+      } else {
+        this.dialogList.index = this.dialogList.index - 1;
+      }
     },
   },
 };
