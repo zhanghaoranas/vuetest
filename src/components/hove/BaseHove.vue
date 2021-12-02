@@ -31,7 +31,7 @@
         @size-change="sizeChange"
         @row-click="rowClick"
         :tableLoading="tableLoading"
-        :row-class-name="test"
+        row-class-name="row-focus-within"
         v-enter
       ></avue-crud>
     </div>
@@ -128,12 +128,12 @@ export default {
   watch: {
     checkBoxList: {
       handler: function (n) {
-        // const length = n.list.length;
-        // 翻页时最后一页。
-        // if (length < n.index) {
-        // }
-        console.log(n.list, n.index);
-        n.list[n.index].focus();
+        // 当用户不适用键盘时。
+        if (!n.list) {
+          this.getAllTableCheckBox();
+        } else {
+          n.list[n.index].focus();
+        }
       },
       deep: true,
     },
@@ -186,6 +186,7 @@ export default {
     },
     rowClick(row) {
       this.$refs.crud.toggleSelection([row]);
+      this.checkBoxList.index = row.$index;
     },
     searchReset() {
       this.searchChange({});
@@ -216,7 +217,7 @@ export default {
           if (this.tableFocus) {
             setTimeout(() => {
               this.getAllTableCheckBox();
-            });
+            }, 500);
           }
           // 打开hove 光标需要 在form表单 而不是 table.
           this.tableFocus = true;
@@ -230,13 +231,23 @@ export default {
     },
 
     keydownChange(event) {
+      // event.stopPropagation();
+      // event.preventDefault();
       const { code } = event;
+      console.log(code);
+      const { index } = this.checkBoxList;
       if (code === 'ArrowRight') {
         this.currentChange(this.page.currentPage + 1);
       } else if (code === 'ArrowLeft' && this.page.currentPage > 1) {
         this.currentChange(this.page.currentPage - 1);
       } else if (code === 'Enter') {
         this.handleSure();
+      } else if (code === 'ArrowDown') {
+        this.checkBoxList.index = index + 1;
+      } else if (code === 'ArrowUp') {
+        if (index > 0) {
+          this.checkBoxList.index = index - 1;
+        }
       }
     },
     getAllTableCheckBox() {
@@ -246,5 +257,11 @@ export default {
   },
 };
 </script>
-<style scoped lang='scss'>
+<style lang='scss'>
+.row-focus-within:focus-within {
+  background-color: red !important;
+}
+.row-focus-within:focus-within > td {
+  background-color: red !important;
+}
 </style>

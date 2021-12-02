@@ -46,7 +46,7 @@
           @keydown.down.stop.prevent="getNextFocus"
           @keydown.up.stop.prevent="getPreFocus"
         >
-          <li v-for="(item, index) in filterList" :key="index" @click.prevent="selectValue(item)">
+          <li v-for="(item, index) in filterList" :key="index" @click.prevent="selectValue(item, index)">
             <el-checkbox size="small" v-model="item.$checked"></el-checkbox>
             <span class="select-dialog__list-label">{{ item.label }}</span>
           </li>
@@ -183,8 +183,9 @@ export default {
         left: left - 4 + 'px',
       };
     },
-    selectValue(item) {
+    selectValue(item, index) {
       item.$checked = !item.$checked;
+      this.dialogList.index = index;
     },
     clearValue() {
       this.rawData.forEach((item) => (item.$checked = false));

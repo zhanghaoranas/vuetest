@@ -1,6 +1,6 @@
 export const getAreaList = ({ currentPage }) => {
   const areaList = [];
-  for (let i = 0; i < 300; i++) {
+  for (let i = 0; i < 20; i++) {
     areaList.push({
       areaName: `${currentPage} - 区域${i}`,
       areaId: i,
@@ -17,6 +17,6 @@ export const getAreaList = ({ currentPage }) => {
           },
         },
       });
-    }, 1000);
+    }, 300);
   });
 };

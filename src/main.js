@@ -9,7 +9,7 @@ import VueCompositionAPI from '@vue/composition-api';
 import VueSocketIO from 'vue-socket.io';
 import store from './store';
 Vue.config.productionTip = false;
-
+Vue.config.devtools = true;
 Vue.use(ElementUI);
 Vue.use(Avue);
 Vue.use(VueCompositionAPI);
