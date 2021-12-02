@@ -2,14 +2,12 @@
   <div>
     <el-input ref="input" class="search-input" placeholder="请填入或选择" :value="name" @input="handleInput">
       <i slot="suffix" v-if="name" class="el-input__icon el-icon-circle-close" @click="handleClear"></i>
-      <el-button slot="append" icon="el-icon-search" @click="handleShowDialog"></el-button>
+      <el-button class="focus-active" slot="append" icon="el-icon-search" @click="handleShowDialog"></el-button>
     </el-input>
     <AreaHove ref="area" title="请选择片区" :visible.sync="visible" :request="api" @deliver="setData" />
-    <!-- <GoodsHove ref="goods" :selectType="selectType" @goodsSubmit="setData" /> -->
   </div>
 </template>
 <script>
-// import GoodsHove from './AreaSearchByHove'; // 商品
 import { getAreaList as api } from '../../api/index.js';
 import AreaHove from '../hove/AreaHove.vue';
 export default {
@@ -20,7 +18,6 @@ export default {
   },
   components: {
     AreaHove,
-    // GoodsHove,
   },
   props: {
     name: {
@@ -62,7 +59,12 @@ export default {
 };
 </script>
 <style scoped lang='scss'>
-.search-input >>> .el-input-group__append {
-  color: #409eff;
+.search-input ::v-deep .el-input-group__append:focus-within {
+  border-color: #409eff !important;
+  color: #409eff !important;
+  border-left: 1px solid;
+}
+.search-input ::v-deep .focus-active:focus {
+  border-left: none !important;
 }
 </style>

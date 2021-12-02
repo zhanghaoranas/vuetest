@@ -31,6 +31,7 @@
         @size-change="sizeChange"
         @row-click="rowClick"
         :tableLoading="tableLoading"
+        :row-class-name="test"
         v-enter
       ></avue-crud>
     </div>
@@ -110,6 +111,11 @@ export default {
       },
       search: null,
       selectionList: [],
+      tableFocus: false,
+      checkBoxList: {
+        list: null,
+        index: 0,
+      },
     };
   },
   mounted() {
@@ -118,9 +124,20 @@ export default {
     if (this.excludeColumn.length > 0) {
       this.tableOption.column = this.tableOption.column.filter((item) => this.excludeColumn.includes(item.prop));
     }
-    // 对键盘事件进行监听
   },
-
+  watch: {
+    checkBoxList: {
+      handler: function (n) {
+        // const length = n.list.length;
+        // 翻页时最后一页。
+        // if (length < n.index) {
+        // }
+        console.log(n.list, n.index);
+        n.list[n.index].focus();
+      },
+      deep: true,
+    },
+  },
   methods: {
     /**
      *点击取消按钮
@@ -146,6 +163,7 @@ export default {
     },
     openModal() {
       this.$refs.crud.doLayout();
+      this.tableFocus = false;
       this.$refs.crud.searchReset();
       // table 部分的事件监听。
       const tableCard = this.$refs.crud.$el.querySelector('.el-table');
@@ -194,8 +212,14 @@ export default {
         const data = res.data.data;
         if (data) {
           this.tableData = data.records;
-          //  判断 是否显示， 处理逻辑不同。
           this.page.total = data.total;
+          if (this.tableFocus) {
+            setTimeout(() => {
+              this.getAllTableCheckBox();
+            });
+          }
+          // 打开hove 光标需要 在form表单 而不是 table.
+          this.tableFocus = true;
         }
       } finally {
         this.tableLoading = false;
@@ -214,6 +238,10 @@ export default {
       } else if (code === 'Enter') {
         this.handleSure();
       }
+    },
+    getAllTableCheckBox() {
+      const allTableCheckbox = this.$refs.crud.$el.querySelectorAll('.el-table__fixed-body-wrapper .el-checkbox__original');
+      this.checkBoxList.list = allTableCheckbox;
     },
   },
 };
