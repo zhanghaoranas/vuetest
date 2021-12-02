@@ -116,6 +116,7 @@ export default {
         list: null,
         index: 0,
       },
+      canFetch: true,
     };
   },
   mounted() {
@@ -136,6 +137,10 @@ export default {
         }
       },
       deep: true,
+    },
+    'checkBoxList.index': function (n) {
+      const dom = this.$refs.crud.$el.querySelector('.el-table__body-wrapper');
+      dom.scrollTop = 37.33 * (n - 2);
     },
   },
   methods: {
@@ -165,12 +170,19 @@ export default {
       this.$refs.crud.doLayout();
       this.tableFocus = false;
       this.$refs.crud.searchReset();
+      // 部分数据恢复
+      this.checkBoxList = {
+        list: null,
+        index: 0,
+      };
+      this.canFetch = true;
       // table 部分的事件监听。
       const tableCard = this.$refs.crud.$el.querySelector('.el-table');
       tableCard.addEventListener('keydown', this.keydownChange);
       this.$once('hook:beforeDestroy', () => {
         tableCard.removeEventListener('keydown', this.keydownChange);
       });
+      this.addScrollEvent();
     },
     handleFullScreen() {
       this.isFullScreen = !this.isFullScreen;
@@ -212,8 +224,16 @@ export default {
         });
         const data = res.data.data;
         if (data) {
-          this.tableData = data.records;
-          this.page.total = data.total;
+          if (this.page.currentPage === 1) {
+            this.tableData = data.records;
+          } else {
+            this.tableData.push(...data.records);
+          }
+          if (data.records.length !== 0) {
+            this.canFetch = true;
+          }
+          // this.tableData = data.records;
+          this.page.total = 0;
           if (this.tableFocus) {
             setTimeout(() => {
               this.getAllTableCheckBox();
@@ -231,28 +251,54 @@ export default {
     },
 
     keydownChange(event) {
-      // event.stopPropagation();
-      // event.preventDefault();
+      event.stopPropagation();
+      event.preventDefault();
       const { code } = event;
-      console.log(code);
       const { index } = this.checkBoxList;
-      if (code === 'ArrowRight') {
-        this.currentChange(this.page.currentPage + 1);
-      } else if (code === 'ArrowLeft' && this.page.currentPage > 1) {
-        this.currentChange(this.page.currentPage - 1);
-      } else if (code === 'Enter') {
+      // if (code === 'ArrowRight') {
+      //   this.currentChange(this.page.currentPage + 1);
+      // } else if (code === 'ArrowLeft' && this.page.currentPage > 1) {
+      //   this.currentChange(this.page.currentPage - 1);
+      // } else
+      if (code === 'Enter') {
         this.handleSure();
       } else if (code === 'ArrowDown') {
-        this.checkBoxList.index = index + 1;
+        const length = this.tableData.length;
+        if (length === index + 1) {
+          this.checkBoxList.index = index;
+        } else {
+          this.checkBoxList.index = index + 1;
+        }
       } else if (code === 'ArrowUp') {
         if (index > 0) {
           this.checkBoxList.index = index - 1;
         }
+      } else if (code === 'Space') {
+        const row = this.tableData[this.checkBoxList.index];
+        this.$refs.crud.toggleSelection([row]);
       }
     },
     getAllTableCheckBox() {
       const allTableCheckbox = this.$refs.crud.$el.querySelectorAll('.el-table__fixed-body-wrapper .el-checkbox__original');
-      this.checkBoxList.list = allTableCheckbox;
+      // 刚打开弹出 会重置数据， 由于监听了checkBoxList 所以会执行该方法， 由于获取不到数据， 所以需要判断一下。
+      const list = Array.from(allTableCheckbox);
+      if (list.length !== 0) {
+        this.checkBoxList.list = list;
+      }
+    },
+    addScrollEvent() {
+      setTimeout(() => {
+        console.log(this.$refs);
+        const dom = this.$refs.crud.$el.querySelector('.el-table__body-wrapper');
+        dom.addEventListener('scroll', () => {
+          const { scrollHeight, scrollTop, clientHeight } = dom;
+          if (scrollHeight - scrollTop - clientHeight < 50 && this.canFetch) {
+            this.canFetch = false;
+            this.page.currentPage = this.page.currentPage + 1;
+            this.getList();
+          }
+        });
+      });
     },
   },
 };

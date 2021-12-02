@@ -13,7 +13,7 @@ export const getAreaList = ({ currentPage }) => {
         data: {
           data: {
             total: areaList.length,
-            records: areaList,
+            records: currentPage < 3 ? areaList : [],
           },
         },
       });
