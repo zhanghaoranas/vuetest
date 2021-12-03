@@ -305,9 +305,6 @@ export default {
 </script>
 <style lang='scss'>
 .row-focus-within:focus-within {
-  background-color: red !important;
-}
-.row-focus-within:focus-within > td {
-  background-color: red !important;
+  background-color: #e5f7fa !important;
 }
 </style>

@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import ElTableShow from '../components/ElTableShow';
+import ElTableShow from '../components/ElTableShow.vue';
 import TableShow from '../components/TableShow.vue';
 export default {
   name: 'tableShow',
