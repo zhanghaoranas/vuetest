@@ -117,6 +117,7 @@ export default {
         index: 0,
       },
       canFetch: true,
+      canScroll: true,
     };
   },
   mounted() {
@@ -139,8 +140,15 @@ export default {
       deep: true,
     },
     'checkBoxList.index': function (n) {
-      const dom = this.$refs.crud.$el.querySelector('.el-table__body-wrapper');
-      dom.scrollTop = 37.333333 * (n - 10);
+      if (this.canScroll) {
+        const dom = this.$refs.crud.$el.querySelector('.el-table__body-wrapper');
+        // 判断当前聚焦的元素是否为最底下的那个。
+        const rowHeight = 37.33333;
+        const scrollTop = dom.scrollTop;
+        if (11 * rowHeight + scrollTop - n * rowHeight < rowHeight) {
+          dom.scrollTop = rowHeight * (n - 10);
+        }
+      }
     },
   },
   methods: {
@@ -198,8 +206,12 @@ export default {
     },
     rowClick(row) {
       this.$refs.crud.toggleSelection([row]);
+      // 当使用鼠标点击时 不需要滚动。
+      this.canScroll = false;
       this.checkBoxList.index = row.$index;
-      console.log(1111111111, row.$index);
+      this.$nextTick(() => {
+        this.canScroll = true;
+      });
     },
     searchReset() {
       this.searchChange({});
