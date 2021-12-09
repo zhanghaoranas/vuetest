@@ -101,7 +101,7 @@ export default {
         addBtn: false,
         searchLabelWidth: 100,
         menu: false,
-        height: 440,
+        height: 448, // 37.3333333 * 3 * 4 ;
         column: [],
       },
       page: {
@@ -140,7 +140,7 @@ export default {
     },
     'checkBoxList.index': function (n) {
       const dom = this.$refs.crud.$el.querySelector('.el-table__body-wrapper');
-      dom.scrollTop = 37.33 * (n - 2);
+      dom.scrollTop = 37.333333 * (n - 10);
     },
   },
   methods: {
@@ -199,6 +199,7 @@ export default {
     rowClick(row) {
       this.$refs.crud.toggleSelection([row]);
       this.checkBoxList.index = row.$index;
+      console.log(1111111111, row.$index);
     },
     searchReset() {
       this.searchChange({});
@@ -288,7 +289,6 @@ export default {
     },
     addScrollEvent() {
       setTimeout(() => {
-        console.log(this.$refs);
         const dom = this.$refs.crud.$el.querySelector('.el-table__body-wrapper');
         dom.addEventListener('scroll', () => {
           const { scrollHeight, scrollTop, clientHeight } = dom;
@@ -304,7 +304,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.row-focus-within:focus-within {
+.row-focus-within:focus-within > td:first-child {
   background-color: #e5f7fa !important;
 }
 </style>

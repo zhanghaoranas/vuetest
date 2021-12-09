@@ -1,16 +1,9 @@
 <template>
-  <div
-    class="select-warp"
-    ref="keySelect"
-    @keydown.stop="handlerKeyDown"
-    tabindex="-1"
-    @click.stop="dialogToggle"
-    v-clickoutside="handleClose"
-  >
-    <div ref="selectMain" class="select-main">
+  <div class="select-warp" ref="keySelect" @keydown.stop="handlerKeyDown" @click.stop="dialogToggle" v-clickoutside="handleClose">
+    <div ref="selectMain" class="select-main" tabindex="0">
       <div>
         <!-- el-tooltip组件 会有聚焦行为 -->
-        <el-tooltip :disabled="!showValue" effect="dark" :tabindex="-1" :content="showValue" placement="top-start">
+        <el-tooltip :disabled="!showValue" effect="dark" :tabindex="0" :content="showValue" placement="top-start">
           <div class="select-main__value">{{ showValue || '所有' }}</div>
         </el-tooltip>
       </div>
@@ -177,10 +170,11 @@ export default {
     },
     setPosition(el) {
       const getBoundingClientRect = el.getBoundingClientRect();
-      const { top, left } = getBoundingClientRect;
+      const { top, left, width } = getBoundingClientRect;
       this.dialogPosition = {
         top: top + 32 + 'px',
-        left: left - 4 + 'px',
+        left: left - 12 + 'px',
+        width: width + 'px',
       };
     },
     selectValue(item, index) {
@@ -224,8 +218,8 @@ export default {
 .select-warp {
   position: relative;
   z-index: 22;
-  height: 32px;
-  padding: 4px 8px;
+  height: 28px;
+  padding: 4px 8px 4px 15px;
   box-sizing: border-box;
   font-size: inherit;
   color: #606266;
@@ -233,8 +227,6 @@ export default {
   border: 1px solid #dcdfe6;
   border-radius: 4px;
   transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-  min-width: 200px;
-  max-width: 400px;
   color: #666;
   &:hover {
     border-color: #409eff;
@@ -274,7 +266,6 @@ export default {
   margin: 8px 0 4px;
   height: 200px;
   overflow: auto;
-  min-width: 300px;
   > li {
     display: flex;
     align-items: center;

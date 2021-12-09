@@ -11,7 +11,7 @@
       @search-change="searchChange"
     >
       <template #surnameSearch>
-        <KeySelect :list="dicData" />
+        <KeySelect :list="dicData" canSearch />
       </template>
       <template #areaIDSearch>
         <AreaSearchByHove ref="searchHove" v-model="form.areaID" @response="setAreaId" />
@@ -26,6 +26,15 @@
 import enter from '../directive/enter.js';
 import AreaSearchByHove from '../components/search/AreaSearchByHove.vue';
 import KeySelect from '../components/KeySelect.vue';
+
+let dicData = [];
+
+for (let i = 0; i < 50; i++) {
+  dicData.push({
+    label: `姓名${i}`,
+    value: i,
+  });
+}
 export default {
   components: {
     AreaSearchByHove,
@@ -68,40 +77,7 @@ export default {
             prop: 'areaName',
             search: true,
             type: 'select',
-            dicData: [
-              {
-                label: '1',
-                value: '1',
-              },
-              {
-                label: '2',
-                value: 2,
-              },
-              {
-                label: '1',
-                value: '1',
-              },
-              {
-                label: '2',
-                value: 2,
-              },
-              {
-                label: '1',
-                value: '1',
-              },
-              {
-                label: '2',
-                value: 2,
-              },
-              {
-                label: '1',
-                value: '1',
-              },
-              {
-                label: '2',
-                value: 2,
-              },
-            ],
+            dicData: dicData,
             // searchslot: true,
           },
           {
@@ -129,7 +105,7 @@ export default {
     },
   },
   created() {
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 50; i++) {
       this.dicData.push({
         label: `姓名${i}`,
         value: i,

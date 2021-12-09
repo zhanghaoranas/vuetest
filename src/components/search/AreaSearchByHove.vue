@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="test">
     <el-input ref="input" class="search-input" placeholder="请填入或选择" :value="name" @input="handleInput">
       <i slot="suffix" v-if="name" class="el-input__icon el-icon-circle-close" @click="handleClear"></i>
       <el-button class="focus-active" slot="append" icon="el-icon-search" @click="handleShowDialog"></el-button>
