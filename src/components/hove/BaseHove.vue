@@ -1,6 +1,7 @@
 <template>
   <el-dialog
     class="avue-dialog"
+    v-if="visible"
     :visible="visible"
     width="1080px"
     :before-close="handleClose"

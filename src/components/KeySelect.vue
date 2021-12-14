@@ -90,7 +90,7 @@ export default {
   },
   computed: {
     showValue() {
-      const value = this.filterList.filter((item) => item.$checked).map((item) => item.label);
+      const value = this.rawData.filter((item) => item.$checked).map((item) => item.label);
       this.$emit('input', value);
       return value.join(' | ');
     },
