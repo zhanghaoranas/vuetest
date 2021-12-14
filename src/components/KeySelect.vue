@@ -1,5 +1,5 @@
 <template>
-  <div class="select-warp" ref="keySelect" @keydown.stop="handlerKeyDown" @click.stop="dialogToggle" v-clickoutside="handleClose">
+  <div class="select-warp" @keydown.stop="handlerKeyDown" @click.stop="dialogToggle" v-clickoutside="handleClose">
     <div ref="selectMain" class="select-main" tabindex="0">
       <div>
         <!-- el-tooltip组件 会有聚焦行为 -->
@@ -187,7 +187,7 @@ export default {
     },
     listKeyDownEnter() {
       this.handleClose();
-      this.$refs.keySelect.focus();
+      this.$refs.selectMain.focus();
     },
     // input 触发 keydown.down 时 列表中的input 拒绝。
     lostFocus() {
