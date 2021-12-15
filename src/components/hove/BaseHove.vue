@@ -112,7 +112,6 @@ export default {
       },
       search: null,
       selectionList: [],
-      tableFocus: false,
       checkBoxList: {
         list: null,
         index: 0,
@@ -134,7 +133,7 @@ export default {
         // 当用户不适用键盘时。
         if (!n.list) {
           this.getAllTableCheckBox();
-        } else {
+        } else if (n.index > -1) {
           n.list[n.index].focus();
         }
       },
@@ -177,17 +176,23 @@ export default {
     },
     openModal() {
       this.$refs.crud.doLayout();
-      this.tableFocus = false;
       this.$refs.crud.searchReset();
       // 部分数据恢复
       this.checkBoxList = {
         list: null,
-        index: 0,
+        index: -1,
       };
       this.canFetch = true;
       // table 部分的事件监听。
       const tableCard = this.$refs.crud.$el.querySelector('.el-table');
+      const form = this.$refs.crud.$el.querySelector('.avue-form');
       tableCard.addEventListener('keydown', this.keydownChange);
+      const tableFocus = (event) => {
+        if (event.code === 'ArrowDown' && this.checkBoxList.list) {
+          this.checkBoxList.index = 0;
+        }
+      };
+      form.addEventListener('keydown', tableFocus);
       this.$once('hook:beforeDestroy', () => {
         tableCard.removeEventListener('keydown', this.keydownChange);
       });
@@ -197,6 +202,7 @@ export default {
       this.isFullScreen = !this.isFullScreen;
     },
     async searchChange(params, done) {
+      this.checkBoxList.index = 0;
       this.page.currentPage = 1;
       this.search = params;
       try {
@@ -248,13 +254,10 @@ export default {
           }
           // this.tableData = data.records;
           this.page.total = 0;
-          if (this.tableFocus) {
-            setTimeout(() => {
-              this.getAllTableCheckBox();
-            }, 500);
-          }
-          // 打开hove 光标需要 在form表单 而不是 table.
-          this.tableFocus = true;
+
+          setTimeout(() => {
+            this.getAllTableCheckBox();
+          }, 500);
         }
       } finally {
         this.tableLoading = false;
@@ -265,15 +268,10 @@ export default {
     },
 
     keydownChange(event) {
-      event.stopPropagation();
+      // event.stopPropagation();
       event.preventDefault();
       const { code } = event;
       const { index } = this.checkBoxList;
-      // if (code === 'ArrowRight') {
-      //   this.currentChange(this.page.currentPage + 1);
-      // } else if (code === 'ArrowLeft' && this.page.currentPage > 1) {
-      //   this.currentChange(this.page.currentPage - 1);
-      // } else
       if (code === 'Enter') {
         this.handleSure();
       } else if (code === 'ArrowDown') {
@@ -286,12 +284,16 @@ export default {
       } else if (code === 'ArrowUp') {
         if (index > 0) {
           this.checkBoxList.index = index - 1;
+        } else if (index === 0) {
+          this.$refs.crud.$el.querySelectorAll('.avue-form input')[0].focus();
+          this.checkBoxList.index = -1;
         }
       } else if (code === 'Space') {
         const row = this.tableData[this.checkBoxList.index];
         this.$refs.crud.toggleSelection([row]);
       }
     },
+
     getAllTableCheckBox() {
       const allTableCheckbox = this.$refs.crud.$el.querySelectorAll('.el-table__fixed-body-wrapper .el-checkbox__original');
       // 刚打开弹出 会重置数据， 由于监听了checkBoxList 所以会执行该方法， 由于获取不到数据， 所以需要判断一下。
@@ -317,6 +319,9 @@ export default {
 };
 </script>
 <style lang='scss'>
+.row-focus-within:focus-within {
+  border-color: red;
+}
 .row-focus-within:focus-within > td:first-child {
   background-color: #e5f7fa !important;
 }
