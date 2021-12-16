@@ -137,6 +137,7 @@ export default {
       }
     },
     visible(n) {
+      this.filterValue = '';
       if (n) {
         // 当选项出现时检索框自动聚焦。
         setTimeout(() => {
@@ -149,8 +150,10 @@ export default {
       }
     },
     'dialogList.index': function (n) {
-      const { list } = this.dialogList;
-      list[n].focus();
+      if (n > -1) {
+        const { list } = this.dialogList;
+        list[n].focus();
+      }
     },
   },
   methods: {
@@ -191,6 +194,7 @@ export default {
     },
     // input 触发 keydown.down 时 列表中的input 拒绝。
     lostFocus() {
+      console.log('检索区域失去焦点');
       const dialogList = this.$refs.dialogList.querySelectorAll('input');
       this.dialogList = {
         list: Array.from(dialogList),
@@ -206,7 +210,14 @@ export default {
     },
     getPreFocus() {
       if (this.dialogList.index === 0) {
-        this.dialogList.index = this.dialogList.list.length - 1;
+        // 两种不同的逻辑 是回到最后一个还是 到检索区域
+        // this.dialogList.index = this.dialogList.list.length - 1;
+        if (this.canSearch) {
+          this.dialogList.index = -1;
+          this.$refs.searchInput.focus();
+        } else {
+          this.dialogList.index = this.dialogList.list.length - 1;
+        }
       } else {
         this.dialogList.index = this.dialogList.index - 1;
       }
