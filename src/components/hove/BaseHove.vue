@@ -44,6 +44,7 @@
 </template>
 <script>
 import enter from '@/directive/enter.js';
+import { nanoid } from 'nanoid';
 export default {
   name: 'BaseHove',
   directives: {
@@ -124,6 +125,9 @@ export default {
     selectedIds() {
       return this.selectionList.map((item) => item.id);
     },
+    selectedNanoIds() {
+      return this.selectionList.map((item) => item.$nanoid);
+    },
   },
   mounted() {
     this.tableOption.column.push(...this.expandColumn);
@@ -164,7 +168,7 @@ export default {
       this.closeModal();
     },
     rowFocus({ row }) {
-      if (this.selectedIds.includes(row.id)) {
+      if (this.selectedNanoIds.includes(row.$nanoid)) {
         return 'row-focus-within';
       } else {
         return '';
@@ -257,9 +261,17 @@ export default {
         const data = res.data.data;
         if (data) {
           if (this.page.currentPage === 1) {
-            this.tableData = data.records;
+            this.tableData = data.records.map((item) => ({
+              ...item,
+              $nanoid: nanoid(),
+            }));
           } else {
-            this.tableData.push(...data.records);
+            this.tableData.push(
+              ...data.records.map((item) => ({
+                ...item,
+                $nanoid: nanoid(),
+              }))
+            );
           }
           if (data.records.length !== 0) {
             this.canFetch = true;
