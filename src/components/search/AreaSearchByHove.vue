@@ -37,6 +37,13 @@ export default {
       visible: false,
     };
   },
+  watch: {
+    visible(n) {
+      if (!n) {
+        this.handleFocus();
+      }
+    },
+  },
   methods: {
     handleShowDialog() {
       this.visible = true;

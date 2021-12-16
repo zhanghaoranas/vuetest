@@ -32,7 +32,7 @@
         @size-change="sizeChange"
         @row-click="rowClick"
         :tableLoading="tableLoading"
-        row-class-name="row-focus-within"
+        :row-class-name="rowFocus"
         v-enter
       ></avue-crud>
     </div>
@@ -120,6 +120,11 @@ export default {
       canScroll: true,
     };
   },
+  computed: {
+    selectedIds() {
+      return this.selectionList.map((item) => item.id);
+    },
+  },
   mounted() {
     this.tableOption.column.push(...this.expandColumn);
     // 排除 column, 排除的优先级高于拓展的优先级。
@@ -157,6 +162,13 @@ export default {
      */
     handleCancel() {
       this.closeModal();
+    },
+    rowFocus({ row }) {
+      if (this.selectedIds.includes(row.id)) {
+        return 'row-focus-within';
+      } else {
+        return '';
+      }
     },
     /**
      * 点击确认按钮
@@ -270,9 +282,9 @@ export default {
     keydownChange(event) {
       // event.stopPropagation();
       event.preventDefault();
-      const { code } = event;
+      const { code, key } = event;
       const { index } = this.checkBoxList;
-      if (code === 'Enter') {
+      if (code === 'Enter' || key === 'Enter') {
         this.handleSure();
       } else if (code === 'ArrowDown') {
         const length = this.tableData.length;
@@ -319,10 +331,15 @@ export default {
 };
 </script>
 <style lang='scss'>
-.row-focus-within:focus-within {
-  border-color: red;
+.row-focus-within {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAAAMSURBVBhXYyitawYAAuIBd6thOqYAAAAASUVORK5CYII=');
 }
-.row-focus-within:focus-within > td:first-child {
-  background-color: #e5f7fa !important;
-}
+// .cell-focus {
+//   background-color: red;
+// }
+// .row-focus-within:focus-within > tr {
+//   background-color: #e5f7fa !important;
+//   background: linear-gradient(to right, red, red);
+// }
 </style>
+
