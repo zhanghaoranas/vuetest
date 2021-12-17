@@ -1,7 +1,6 @@
 <template>
   <el-dialog
     class="avue-dialog"
-    v-if="visible"
     :visible="visible"
     width="1080px"
     :before-close="handleClose"
@@ -168,7 +167,12 @@ export default {
       this.closeModal();
     },
     rowFocus({ row }) {
-      if (this.selectedNanoIds.includes(row.$nanoid)) {
+      // if (this.selectedNanoIds.includes(row.$nanoid)) {
+      //   return 'row-focus-within';
+      // } else {
+      //   return '';
+      // }
+      if (row.$index === this.checkBoxList.index) {
         return 'row-focus-within';
       } else {
         return '';
@@ -202,6 +206,7 @@ export default {
       // table 部分的事件监听。
       const tableCard = this.$refs.crud.$el.querySelector('.el-table');
       const form = this.$refs.crud.$el.querySelector('.avue-form');
+      form.querySelectorAll('input')[0].focus(); // 修复谷歌弹窗通过键盘触发没有聚焦的bug.
       tableCard.addEventListener('keydown', this.keydownChange);
       const tableFocus = (event) => {
         if (event.code === 'ArrowDown' && this.checkBoxList.list) {
@@ -344,7 +349,8 @@ export default {
 </script>
 <style lang='scss'>
 .row-focus-within {
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAAAMSURBVBhXYyitawYAAuIBd6thOqYAAAAASUVORK5CYII=');
+  background-color: #81bfde !important;
+  // background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAAAMSURBVBhXYyitawYAAuIBd6thOqYAAAAASUVORK5CYII=');
 }
 // .cell-focus {
 //   background-color: red;
