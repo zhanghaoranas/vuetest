@@ -137,6 +137,7 @@ export default {
   },
   watch: {
     checkBoxList: {
+      // 应该添加节流的。
       handler: function (n) {
         // 当用户不适用键盘时。
         if (!n.list) {
@@ -147,14 +148,22 @@ export default {
       },
       deep: true,
     },
-    'checkBoxList.index': function (n) {
+    'checkBoxList.index': function (n, o) {
       if (this.canScroll) {
         const dom = this.$refs.crud.$el.querySelector('.el-table__body-wrapper');
         // 判断当前聚焦的元素是否为最底下的那个。
-        const rowHeight = 37.33333;
+        const rowHeight = 37;
         const scrollTop = dom.scrollTop;
-        if (11 * rowHeight + scrollTop - n * rowHeight < rowHeight) {
-          dom.scrollTop = rowHeight * (n - 10);
+        if (n > o) {
+          // 键盘向下的逻辑
+          if (11 * rowHeight + scrollTop - n * rowHeight < rowHeight) {
+            dom.scrollTop = rowHeight * (n - 10);
+          }
+        } else {
+          // 键盘向上的逻辑
+          if (n * rowHeight - scrollTop < rowHeight) {
+            dom.scrollTop = rowHeight * n;
+          }
         }
       }
     },
