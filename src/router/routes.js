@@ -44,4 +44,9 @@ export default [
     name: 'elementUI Form 数组转对象',
     component: () => import('../views/FormArr.vue'),
   },
+  {
+    path: '/vue-drop',
+    name: 'vuedraggable 的简单使用',
+    component: () => import('../views/vuedraggable'),
+  },
 ];

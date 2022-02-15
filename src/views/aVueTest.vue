@@ -14,7 +14,7 @@
         <KeySelect :list="dicData" canSearch />
       </template>
       <template #areaIDSearch>
-        <AreaSearchByHove ref="searchHove" v-model="form.areaID" @response="setAreaId" />
+        <AreaSearchByHove v-model="form.areaID"/>
       </template>
     </avue-crud>
     {{ form }}

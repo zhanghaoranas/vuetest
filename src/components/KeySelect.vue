@@ -1,10 +1,10 @@
 <template>
-  <div class="select-warp" @keydown.stop="handlerKeyDown" @click.stop="dialogToggle" v-clickoutside="handleClose">
+  <div class="select-warp" @keydown.stop="handlerKeyDown" @click="dialogToggle" v-clickoutside="handleClose">
     <div ref="selectMain" class="select-main" tabindex="0">
       <div>
         <!-- el-tooltip组件 会有聚焦行为 -->
         <el-tooltip :disabled="!showValue" effect="dark" :tabindex="0" :content="showValue" placement="top-start">
-          <div class="select-main__value">{{ showValue || '所有' }}</div>
+          <div class="select-main__value">{{ showValue || "所有" }}</div>
         </el-tooltip>
       </div>
 
@@ -32,13 +32,7 @@
             v-model="filterValue"
           ></el-input>
         </div>
-        <ul
-          class="select-dialog__list"
-          tabindex="-1"
-          ref="dialogList"
-          @keydown.down.stop.prevent="getNextFocus"
-          @keydown.up.stop.prevent="getPreFocus"
-        >
+        <ul class="select-dialog__list" tabindex="-1" ref="dialogList" @keydown.down.stop.prevent="getNextFocus" @keydown.up.stop.prevent="getPreFocus">
           <li v-for="(item, index) in filterList" :key="index" @click.prevent="selectValue(item, index)">
             <el-checkbox size="small" v-model="item.$checked"></el-checkbox>
             <span class="select-dialog__list-label">{{ item.label }}</span>
@@ -49,22 +43,22 @@
   </div>
 </template>
 <script>
-import Clickoutside from '@/directive/clickoutside.js';
+import Clickoutside from "@/directive/clickoutside.js";
 
 export default {
-  name: 'KeySelect',
+  name: "KeySelect",
   directives: { Clickoutside },
   components: {},
   props: {
     list: {
       type: Array,
-      default: function () {
+      default: function() {
         return [];
       },
     },
     value: {
       type: Array,
-      default: function () {
+      default: function() {
         return [];
       },
     },
@@ -79,7 +73,7 @@ export default {
       rawData: [], // 生成的原始数据
       filterList: [], // 筛选过后的数据
       visible: false,
-      filterValue: '',
+      filterValue: "",
       observer: null,
       dialogPosition: null,
       dialogList: {
@@ -90,9 +84,11 @@ export default {
   },
   computed: {
     showValue() {
-      const value = this.rawData.filter((item) => item.$checked).map((item) => item.label);
-      this.$emit('input', value);
-      return value.join(' | ');
+      const checkedData = this.rawData.filter((item) => item.$checked);
+      const showValue = checkedData.map((item) => item.label);
+      const value = checkedData.map((item) => item.value);
+      this.$emit("input", value);
+      return showValue.join(" | ");
     },
   },
   created() {
@@ -108,14 +104,16 @@ export default {
     const selectMain = this.$refs.selectMain;
     // 由于外部存在overflow:hidden 所以将选项节点转移到body中。
     document.body.appendChild(selectDialog);
+    setTimeout(() => {
+      this.setPosition(selectMain);
+    });
 
-    this.setPosition(selectMain);
     const callback = () => {
       this.setPosition(selectMain);
     };
-    window.addEventListener('resize', callback);
-    this.$once('hook:beforeDestroy', function () {
-      window.removeEventListener('resize', callback);
+    window.addEventListener("resize", callback);
+    this.$once("hook:beforeDestroy", function() {
+      window.removeEventListener("resize", callback);
     });
 
     // document.addEventListener('keydown', function (event) {
@@ -137,9 +135,10 @@ export default {
       }
     },
     visible(n) {
-      this.filterValue = '';
+      this.filterValue = "";
       if (n) {
         // 当选项出现时检索框自动聚焦。
+        this.dialogList.index = -1;
         setTimeout(() => {
           if (this.canSearch) {
             this.$refs.searchInput.focus();
@@ -149,10 +148,15 @@ export default {
         }, 200);
       }
     },
-    'dialogList.index': function (n) {
+    "dialogList.index": function(n) {
       if (n > -1) {
         const { list } = this.dialogList;
         list[n].focus();
+      }
+    },
+    value(n) {
+      if (!(Array.isArray(n) && n.length > 0)) {
+        this.clearValue();
       }
     },
   },
@@ -161,23 +165,25 @@ export default {
      * 展示下拉列表
      */
     handlerKeyDown(event) {
-      if (event.key === 'ArrowDown') {
+      if (event.key === "ArrowDown") {
         this.visible = true;
       }
     },
     dialogToggle() {
+      console.log("切换。。。。");
       this.visible = !this.visible;
     },
     handleClose() {
       this.visible = false;
+      console.log("关闭。。。。");
     },
     setPosition(el) {
       const getBoundingClientRect = el.getBoundingClientRect();
       const { top, left, width } = getBoundingClientRect;
       this.dialogPosition = {
-        top: top + 32 + 'px',
-        left: left - 12 + 'px',
-        width: width + 'px',
+        top: top + 32 + "px",
+        left: left - 12 + "px",
+        width: width + "px",
       };
     },
     selectValue(item, index) {
@@ -194,8 +200,8 @@ export default {
     },
     // input 触发 keydown.down 时 列表中的input 拒绝。
     lostFocus() {
-      console.log('检索区域失去焦点');
-      const dialogList = this.$refs.dialogList.querySelectorAll('input');
+      console.log("检索区域失去焦点");
+      const dialogList = this.$refs.dialogList.querySelectorAll("input");
       this.dialogList = {
         list: Array.from(dialogList),
         index: 0,
@@ -225,7 +231,7 @@ export default {
   },
 };
 </script>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .select-warp {
   position: relative;
   z-index: 22;
@@ -268,7 +274,7 @@ export default {
   position: absolute;
   background: #fff;
   padding: 4px;
-  z-index: 99;
+  z-index: 9999;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
 }
 .select-dialog__list {
@@ -329,5 +335,4 @@ export default {
   transform: scaleY(0);
 }
 </style>
-<style>
-</style>
+<style></style>
