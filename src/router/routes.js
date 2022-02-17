@@ -64,4 +64,9 @@ export default [
     name: "表格内部选择",
     component: () => import("../views/CellUser.vue"),
   },
+  {
+    path: "/table-edit",
+    name: "表格编辑操作",
+    component: () => import("../views/TableEdit"),
+  },
 ];
