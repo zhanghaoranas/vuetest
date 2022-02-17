@@ -59,4 +59,9 @@ export default [
     name: "vxe-table page组件",
     component: () => import("../views/VxeTablePage"),
   },
+  {
+    path: "/cell-user",
+    name: "表格内部选择",
+    component: () => import("../views/CellUser.vue"),
+  },
 ];

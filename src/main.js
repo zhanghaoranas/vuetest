@@ -6,8 +6,8 @@ import router from "./router";
 import "element-ui/lib/theme-chalk/index.css";
 // import '@smallwei/avue/lib/index.css';
 import VueCompositionAPI from "@vue/composition-api";
-import VueSocketIO from "vue-socket.io";
-import store from "./store";
+// import VueSocketIO from "vue-socket.io";
+// import store from "./store";
 
 import "xe-utils";
 import VXETable from "vxe-table";
@@ -20,19 +20,19 @@ Vue.config.devtools = true;
 Vue.use(ElementUI);
 Vue.use(Avue);
 Vue.use(VueCompositionAPI);
-
-Vue.use(
-  new VueSocketIO({
-    debug: true,
-    connection: "http://localhost:3000/",
-    vuex: {
-      store,
-      actionPrefix: "SOCKET_",
-      mutationPrefix: "SOCKET_",
-    },
-    options: { path: "/my-app/" }, //Optional options
-  })
-);
+Vue.prototype.$XModal = VXETable.modal;
+// Vue.use(
+//   new VueSocketIO({
+//     debug: true,
+//     connection: "http://localhost:3000/",
+//     vuex: {
+//       store,
+//       actionPrefix: "SOCKET_",
+//       mutationPrefix: "SOCKET_",
+//     },
+//     options: { path: "/my-app/" }, //Optional options
+//   })
+// );
 
 new Vue({
   router,
