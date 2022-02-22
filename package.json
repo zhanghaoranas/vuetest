@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@smallwei/avue": "^2.8.10",
@@ -31,6 +32,8 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.4",
     "sass": "^1.43.5",
     "sass-loader": "10.1",
     "vue-template-compiler": "^2.6.11"
@@ -53,5 +56,8 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "lint-staged": {
+    "*.js": "eslint --cache --fix"
+  }
 }

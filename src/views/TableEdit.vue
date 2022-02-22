@@ -2,6 +2,13 @@
   <vxe-grid ref="vxeGrid" v-bind="gridOptions" @keydown="keydown"> </vxe-grid>
 </template>
 <script>
+// 说明
+// 1. 激活之后没有选中value 是否通过 ctrl+a 进行替换。
+
+// 问题
+// 1. 如果上下键控制表格 内部的下拉菜单如果弹出 --1. 如果非input 则不允许操作。
+// 2. 如果选中了非编辑cell 方向操作会出现问题。
+
 export default {
   name: "",
   data() {
@@ -10,7 +17,6 @@ export default {
         border: true,
         resizable: true,
         showOverflow: true,
-        height: 300,
         align: "left",
 
         columns: [
@@ -21,6 +27,7 @@ export default {
             title: "Name",
             editRender: {
               name: "$input",
+              autoselect: true,
             },
           },
           {
@@ -29,6 +36,17 @@ export default {
             showHeaderOverflow: true,
             editRender: {
               name: "$select",
+              autoselect: true,
+              options: [
+                {
+                  label: "Man",
+                  value: "Man",
+                },
+                {
+                  label: "Woman",
+                  value: "Woman",
+                },
+              ],
             },
           },
           { field: "address", title: "Address", showOverflow: true },
@@ -38,6 +56,7 @@ export default {
             showOverflow: true,
             editRender: {
               name: "$input",
+              autoselect: true,
             },
           },
         ],
@@ -73,11 +92,10 @@ export default {
   created() {},
   methods: {
     keydown({ $event }) {
-      console.log($event);
       const { code } = $event;
       $event.stopPropagation();
       const vxeGrid = this.$refs.vxeGrid;
-      console.log(code);
+      //   console.log(code);
       switch (code) {
         case "ArrowRight":
           this.setActiveCellOnRow(vxeGrid, true);
@@ -96,10 +114,15 @@ export default {
           break;
       }
     },
+    /**
+     *
+     * @param {VxeTable} vxeGrid
+     * @param {boolean} arrow
+     * @description 左右键控制表格。
+     */
     setActiveCellOnRow(vxeGrid, arrow) {
       const { row, rowIndex, columnIndex } = vxeGrid.getActiveRecord();
       const willActiveColumn = this.getNextEditCellOnRow(columnIndex, arrow);
-      console.log(willActiveColumn);
       if (willActiveColumn) {
         vxeGrid.setActiveCell(row, willActiveColumn);
       } else {
@@ -129,8 +152,33 @@ export default {
         if (column.editRender) {
           return column;
         } else {
-          return this.getNextEditCellOnRow(columnIndex + step);
+          return this.getNextEditCellOnRow(columnIndex + step, arrow);
         }
+      }
+    },
+    /**
+     *
+     * @param {VxeTable} vxeGrid
+     * @param {boolean} arrow
+     * @description 上下键控制表格。
+     */
+    setActiveCellOnColumn(vxeGrid, arrow) {
+      const { rowIndex, column } = vxeGrid.getActiveRecord();
+      const renderType = column.editRender?.name;
+      if (!renderType.toLowerCase().includes("input")) return; // 非input类型不允许上下移动
+      if (rowIndex === 0 && !arrow) return; // 第一行向上不执行
+      const willActiveRow = this.getNextEditCellOnColumn(rowIndex + (arrow ? 1 : -1));
+      if (willActiveRow) {
+        vxeGrid.setActiveCell(willActiveRow, column);
+        vxeGrid.setCurrentRow(willActiveRow);
+      }
+    },
+    getNextEditCellOnColumn(rowIndex) {
+      const endRowIndex = this.gridOptions.data.length - 1; // 最后一行的索引
+      if (rowIndex > endRowIndex) {
+        return false;
+      } else {
+        return this.gridOptions.data[rowIndex];
       }
     },
   },
