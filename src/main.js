@@ -8,7 +8,7 @@ import "element-ui/lib/theme-chalk/index.css";
 import VueCompositionAPI from "@vue/composition-api";
 // import VueSocketIO from "vue-socket.io";
 // import store from "./store";
-
+import Message from "@/components/Message";
 import "xe-utils";
 import VXETable from "vxe-table";
 import "vxe-table/lib/style.css";
@@ -21,6 +21,7 @@ Vue.use(ElementUI);
 Vue.use(Avue);
 Vue.use(VueCompositionAPI);
 Vue.prototype.$XModal = VXETable.modal;
+Vue.prototype.$msg = Message;
 // Vue.use(
 //   new VueSocketIO({
 //     debug: true,
