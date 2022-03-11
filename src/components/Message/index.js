@@ -7,7 +7,7 @@ const instances = [];
 const Message = function(options) {
   // 将上一个关闭。
   instances.forEach((item) => {
-    item.close();
+    item.destroy();
   });
   options = options || {};
   const instance = new MessageConstructor({

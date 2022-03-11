@@ -3,7 +3,7 @@
     <div class="pos-message" :class="closeStatus" :style="{ zIndex }" v-show="visible">
       <i :class="typeClass"></i>
       <p class="pos-message__text">{{ message }}</p>
-      <i v-if="canClose" class="el-icon-close pos-message__closeIcon" @click="close"></i>
+      <i v-if="canClose" class="el-icon-close pos-message__closeIcon" @click="destroy"></i>
     </div>
   </transition>
 </template>
@@ -34,7 +34,7 @@ export default {
   created() {
     if (!this.canClose) {
       const timer = setTimeout(() => {
-        this.close();
+        this.destroy();
       }, 3000);
       this.$once("hook:beforeDestroy", () => {
         clearTimeout(timer);
@@ -42,7 +42,7 @@ export default {
     }
   },
   methods: {
-    close() {
+    destroy() {
       this.visible = false;
     },
     handleAfterLeave() {
