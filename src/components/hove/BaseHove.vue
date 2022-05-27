@@ -1,7 +1,6 @@
 <template>
   <el-dialog
     class="avue-dialog"
-    v-if="visible"
     :visible="visible"
     width="1080px"
     :before-close="handleClose"
@@ -138,6 +137,7 @@ export default {
   },
   watch: {
     checkBoxList: {
+      // 应该添加节流的。
       handler: function (n) {
         // 当用户不适用键盘时。
         if (!n.list) {
@@ -148,14 +148,22 @@ export default {
       },
       deep: true,
     },
-    'checkBoxList.index': function (n) {
+    'checkBoxList.index': function (n, o) {
       if (this.canScroll) {
         const dom = this.$refs.crud.$el.querySelector('.el-table__body-wrapper');
         // 判断当前聚焦的元素是否为最底下的那个。
-        const rowHeight = 37.33333;
+        const rowHeight = 37;
         const scrollTop = dom.scrollTop;
-        if (11 * rowHeight + scrollTop - n * rowHeight < rowHeight) {
-          dom.scrollTop = rowHeight * (n - 10);
+        if (n > o) {
+          // 键盘向下的逻辑
+          if (11 * rowHeight + scrollTop - n * rowHeight < rowHeight) {
+            dom.scrollTop = rowHeight * (n - 10);
+          }
+        } else {
+          // 键盘向上的逻辑
+          if (n * rowHeight - scrollTop < rowHeight) {
+            dom.scrollTop = rowHeight * n;
+          }
         }
       }
     },
@@ -168,7 +176,12 @@ export default {
       this.closeModal();
     },
     rowFocus({ row }) {
-      if (this.selectedNanoIds.includes(row.$nanoid)) {
+      // if (this.selectedNanoIds.includes(row.$nanoid)) {
+      //   return 'row-focus-within';
+      // } else {
+      //   return '';
+      // }
+      if (row.$index === this.checkBoxList.index) {
         return 'row-focus-within';
       } else {
         return '';
@@ -202,6 +215,7 @@ export default {
       // table 部分的事件监听。
       const tableCard = this.$refs.crud.$el.querySelector('.el-table');
       const form = this.$refs.crud.$el.querySelector('.avue-form');
+      form.querySelectorAll('input')[0].focus(); // 修复谷歌弹窗通过键盘触发没有聚焦的bug.
       tableCard.addEventListener('keydown', this.keydownChange);
       const tableFocus = (event) => {
         if (event.code === 'ArrowDown' && this.checkBoxList.list) {
@@ -344,7 +358,8 @@ export default {
 </script>
 <style lang='scss'>
 .row-focus-within {
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAAAMSURBVBhXYyitawYAAuIBd6thOqYAAAAASUVORK5CYII=');
+  background-color: #81bfde !important;
+  // background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAAAMSURBVBhXYyitawYAAuIBd6thOqYAAAAASUVORK5CYII=');
 }
 // .cell-focus {
 //   background-color: red;

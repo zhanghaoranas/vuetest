@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@smallwei/avue": "^2.8.10",
@@ -13,11 +14,15 @@
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "element-ui": "^2.15.1",
+    "lodash": "^4.17.21",
     "nanoid": "^3.1.30",
     "vue": "^2.6.11",
     "vue-router": "^3.5.1",
     "vue-socket.io": "^3.0.10",
-    "vuex": "^3.6.2"
+    "vuedraggable": "^2.24.3",
+    "vuex": "^3.6.2",
+    "vxe-table": "3",
+    "xe-utils": "3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -27,6 +32,8 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.4",
     "sass": "^1.43.5",
     "sass-loader": "10.1",
     "vue-template-compiler": "^2.6.11"
@@ -49,5 +56,8 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "lint-staged": {
+    "*.js": "eslint --cache --fix"
+  }
 }
