@@ -36,7 +36,6 @@ Vue.prototype.$confirm = Confirm;
 //     options: { path: "/my-app/" }, //Optional options
 //   })
 // );
-console.log(1);
 new Vue({
   router,
   render: (h) => h(App),
